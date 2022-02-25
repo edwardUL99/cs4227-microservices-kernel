@@ -11,7 +11,16 @@
 
     <artifactId>server</artifactId>
     <name>Microservices Kernel Server</name>
-    <description>This module provides the server that runs the kernel, taking external requests, mapping them and
-    also containing the communication points for microservices to interact with
+    <description>
+        This module provides the server that runs the kernel, taking external requests, mapping them and
+        also containing the communication points for microservices to interact with
     </description>
+
+    <dependencies>
+        <dependency>
+            <groupId>ie.ul.microservices</groupId>
+            <artifactId>api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
 </project>
