@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>kernel</artifactId>
+        <groupId>ie.ul.microservices</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>api</artifactId>
+    <name>Microservices Kernel API</name>
+    <description>This module provides the "API" for microservices to use for registration to the kernel. It is not an
+    API in the strictest sense where all the classes are interfaces implemented in a different module. Instead, it provides
+    classes outlining the shape of registration requests, and also marker interfaces marking the front endpoints each microservice must implement
+    </description>
+</project>
