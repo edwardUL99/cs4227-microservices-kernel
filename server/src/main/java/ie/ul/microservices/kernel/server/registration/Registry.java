@@ -1,0 +1,29 @@
+package ie.ul.microservices.kernel.server.registration;
+
+import java.util.List;
+
+import ie.ul.microservices.kernel.server.models.Microservice;
+
+/**
+ * This interface represents a registry that is capable of storing registered microservices
+ * TODO think of the methods a registry should provide
+ */
+public interface Registry {
+    /**
+     * Get the list of registered microservices stored in the registry
+     * @return list of all registered microservices
+     */
+    List<Microservice> getMicroservices();
+
+    /**
+     * Register the given microservice into the registry
+     * @param microservice the microservice to register
+     */
+    void registerMicroservice(Microservice microservice);
+
+    /**
+     * Unregister the microservice from the registry
+     * @param microservice the microservice to unregister
+     */
+    void unregisterMicroservice(Microservice microservice);
+}
