@@ -23,6 +23,13 @@ public interface FrontController {
     ResponseEntity<HealthResponse> health();
 
     /**
+     * This is called by the kernel to lookup an endpoint based on a given name
+     * @return the response entity containing the endpoint that matched the given name
+     */
+    @GetMapping("/lookup")
+    ResponseEntity<?> lookup();
+
+    /**
      * The kernel can call this endpoint to tell the microservice that it should be shutdown. The response should be sent back
      * to the kernel before shutdown.
      *
