@@ -8,4 +8,6 @@ package ie.ul.microservices.kernel.server.mapping;
  * TODO decide methods
  */
 public interface RequestMapper {
+    
+    public void mapRequestToMicroService();
 }
