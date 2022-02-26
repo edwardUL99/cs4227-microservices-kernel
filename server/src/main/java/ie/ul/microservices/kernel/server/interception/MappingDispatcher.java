@@ -22,10 +22,11 @@ public class MappingDispatcher {
 
     /**
      * Construct a dispatcher instance
+     * @param end the end of the interceptor chain to consume context objects
      */
-    public MappingDispatcher() {
-        this.onBeforeMapping = new BeforeMappingChain();
-        this.onAfterMapping = new AfterMappingChain();
+    public MappingDispatcher(InterceptorChainEnd<MappingContext> end) {
+        this.onBeforeMapping = new BeforeMappingChain(end);
+        this.onAfterMapping = new AfterMappingChain(end);
     }
 
     /**
@@ -80,12 +81,20 @@ public class MappingDispatcher {
     }
 
     /**
-     * Get the singleton instance for the dispatcher
+     * Initialise the singleton instance for the dispatcher.
+     * @param end the end of the chain to consume the context passed through the chain
+     */
+    public static void initialise(InterceptorChainEnd<MappingContext> end) {
+        instance = new MappingDispatcher(end);
+    }
+
+    /**
+     * Get the singleton instance for the dispatcher. If {@link #initialise(InterceptorChainEnd)} has not been called, an IllegalStateException is thrown
      * @return singleton instance of the dispatcher
      */
     public static MappingDispatcher getInstance() {
         if (instance == null) {
-            instance = new MappingDispatcher();
+            throw new IllegalStateException("The MappingDispatcher has not been initialised");
         }
 
         return instance;

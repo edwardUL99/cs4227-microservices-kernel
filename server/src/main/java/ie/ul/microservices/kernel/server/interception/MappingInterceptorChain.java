@@ -11,11 +11,23 @@ public abstract class MappingInterceptorChain implements InterceptionChain<Mappi
     /**
      * The list of interceptors in the chain
      */
-    private List<MappingInterceptor> interceptors = new ArrayList<>();
+    private final List<MappingInterceptor> interceptors = new ArrayList<>();
     /**
      * The iterator to iterate through the interceptors
      */
     private ListIterator<MappingInterceptor> iterator;
+    /**
+     * The end of the interceptor chain
+     */
+    private final InterceptorChainEnd<MappingContext> end;
+
+    /**
+     * Construct a chain, providing an InterceptorChainEnd to accept the context from the last element in the chain
+     * @param end the end accepting the context that was passed through the chain
+     */
+    protected MappingInterceptorChain(InterceptorChainEnd<MappingContext> end) {
+        this.end = end;
+    }
 
     /**
      * Add the interceptor to the chain. This should be added before the first call to next
@@ -49,7 +61,20 @@ public abstract class MappingInterceptorChain implements InterceptionChain<Mappi
             this.handle(interceptor, context);
         } else {
             this.iterator = null;
+            this.end.consumeContext(context);
         }
+    }
+
+    /**
+     * Terminates the chain prematurely at the current interceptor. This is equivalent to next not being called from
+     * the current interceptor, except for it passes the context to the end of the chain. If this is not the last
+     * interceptor, it skips all the interceptors not visited yet
+     * @param context the context as of the current interceptor
+     */
+    @Override
+    public void terminate(MappingContext context) {
+        this.iterator = null;
+        this.end.consumeContext(context);
     }
 
     /**

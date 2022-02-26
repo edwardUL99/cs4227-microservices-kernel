@@ -14,16 +14,12 @@ public abstract class SingleMappingInterceptor implements MappingInterceptor {
     protected final MappingDispatcher.RegistrationStrategy strategy;
 
     /**
-     * The log used for logging warnings
-     */
-    private Logger log = LoggerFactory.getLogger(SingleMappingInterceptor.class);
-
-    /**
      * Create and register the interceptor with the given strategy
      * @param strategy the strategy to register the interceptor with
      */
     protected SingleMappingInterceptor(MappingDispatcher.RegistrationStrategy strategy) {
         if (strategy == MappingDispatcher.RegistrationStrategy.ALL) {
+            Logger log = LoggerFactory.getLogger(SingleMappingInterceptor.class);
             log.warn("You should use the AllMappingInterceptor instead. This class is intended for use with the other" +
                     " RegistrationStrategies. This will still work, but since the class provides no-op implementations, " +
                     "it cannot be guaranteed that all the interception callbacks will be implemented");

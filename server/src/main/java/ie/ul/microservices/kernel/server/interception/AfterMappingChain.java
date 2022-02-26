@@ -5,6 +5,15 @@ package ie.ul.microservices.kernel.server.interception;
  */
 public class AfterMappingChain extends MappingInterceptorChain {
     /**
+     * Construct a chain, providing an InterceptorChainEnd to accept the context from the last element in the chain
+     *
+     * @param end the end accepting the context that was passed through the chain
+     */
+    protected AfterMappingChain(InterceptorChainEnd<MappingContext> end) {
+        super(end);
+    }
+
+    /**
      * When next is called, the next interceptor and context will be passed into this method. The method should delegate
      * the context to the appropriate interceptor method on next
      *
