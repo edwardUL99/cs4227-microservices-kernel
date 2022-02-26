@@ -5,6 +5,8 @@ import java.util.Properties;
 import ie.ul.microservices.kernel.server.models.Microservice;
 
 class PlugInFactory{
+
+    //uses a properties file to list valid microservices
     private static Properties props = new Properties(); 
 
     static { 
@@ -14,13 +16,19 @@ class PlugInFactory{
             throw new ExceptionInInitializerError(ex); 
         } 
     }
+
+    /**
+     * 
+     * @param key - recevies a key to be compared against implementation names.
+     * @return
+     */
     public static Object getMicroService(String key){
         String implementationName = props.getProperty(key);
         if(implementationName == null) {
             throw new RuntimeException("unspecifed implementation");
         }
         try{
-            //code to return correct microservice
+            //add code to retrieve correct microservice from registry
             return new Microservice();
         } catch(Exception ex) {
             throw new RuntimeException("factory was unable to constuct");
