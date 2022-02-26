@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 @RestController
 @RequestMapping("/api/gateway")
 public class GatewayController {
-    @RequestMapping("/*")
+    @RequestMapping("/**")
     public ResponseEntity<?> gateway(HttpServletRequest request, HttpServletResponse response) {
         return null;
     }
