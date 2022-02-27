@@ -5,4 +5,5 @@ package ie.ul.microservices.kernel.api.server;
  * TODO think up fields
  */
 public class UnregisterRequest {
+    //ref to microservice that wants to eunRgister?
 }

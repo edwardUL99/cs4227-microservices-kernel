@@ -5,4 +5,5 @@ package ie.ul.microservices.kernel.api.server;
  * TODO decide what parameters are needed
  */
 public class RegistrationRequest {
+    //ref to microservice that wants to register
 }
