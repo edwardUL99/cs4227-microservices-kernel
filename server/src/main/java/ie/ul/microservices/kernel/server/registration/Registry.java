@@ -15,6 +15,11 @@ public interface Registry {
      */
     List<Microservice> getMicroservices();
 
+    /**
+     * Get the microservice stored in the registry with the specified name
+     * @param name name of the microservice
+     * @return the microservice instance with specified
+     */
     Microservice getMicroservice(String name);
 
     /**

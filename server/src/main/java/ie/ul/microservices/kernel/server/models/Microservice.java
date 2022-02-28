@@ -11,14 +11,26 @@ public class Microservice {
     String microserviceName;
     boolean healthStatus;
 
+    /**
+     * gets the name of the microservice
+     * @return name of the microservice
+     */
     public String getName(){
         return microserviceName;
     }
 
+    /**
+     * sets the health status of the microservice to specified health status
+     * @param healthStatus new health status of the microservice
+     */
     public void setHealthStatus(boolean healthStatus){
         this.healthStatus = healthStatus;
     }
 
+    /**
+     * gets the health status of the microservice
+     * @return health status of the microservice
+     */
     public boolean isHealthy(){
         return healthStatus;
     }
