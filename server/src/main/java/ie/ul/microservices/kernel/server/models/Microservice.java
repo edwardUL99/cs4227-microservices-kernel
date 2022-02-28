@@ -9,8 +9,17 @@ public class Microservice {
     String host;
     String port;
     String microserviceName;
+    boolean healthStatus;
 
     public String getName(){
         return microserviceName;
+    }
+
+    public void setHealthStatus(boolean healthStatus){
+        this.healthStatus = healthStatus;
+    }
+
+    public boolean isHealthy(){
+        return healthStatus;
     }
 }
