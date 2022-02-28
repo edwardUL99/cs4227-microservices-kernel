@@ -15,6 +15,8 @@ public interface Registry {
      */
     List<Microservice> getMicroservices();
 
+    Microservice getMicroservice(String name);
+
     /**
      * Register the given microservice into the registry
      * @param microservice the microservice to register

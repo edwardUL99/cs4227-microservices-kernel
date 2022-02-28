@@ -5,7 +5,12 @@ package ie.ul.microservices.kernel.server.models;
  * TODO decide what fields to add to it
  */
 public class Microservice {
-    String name;
-    /*String ipAddresString;
-    String port;*/
+
+    String host;
+    String port;
+    String microserviceName;
+
+    public String getName(){
+        return microserviceName;
+    }
 }
