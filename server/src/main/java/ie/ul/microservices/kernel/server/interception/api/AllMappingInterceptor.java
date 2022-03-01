@@ -1,4 +1,7 @@
-package ie.ul.microservices.kernel.server.interception;
+package ie.ul.microservices.kernel.server.interception.api;
+
+import ie.ul.microservices.kernel.server.interception.MappingDispatcher;
+import ie.ul.microservices.kernel.server.interception.api.MappingInterceptor;
 
 /**
  * This class provides the base for a mapping interceptor that automatically registers itself as an interceptor that can
@@ -6,7 +9,7 @@ package ie.ul.microservices.kernel.server.interception;
  */
 public abstract class AllMappingInterceptor implements MappingInterceptor {
     /**
-     * Construct the interceptor and register with the dispatcher with the RegistrationStrategy.ALL registration strategy
+     * Construct an interceptor instance
      */
     protected AllMappingInterceptor() {
         MappingDispatcher.getInstance().registerMappingInterceptor(this, MappingDispatcher.RegistrationStrategy.ALL);

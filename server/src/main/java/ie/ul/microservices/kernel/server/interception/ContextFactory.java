@@ -1,35 +1,51 @@
 package ie.ul.microservices.kernel.server.interception;
 
+import ie.ul.microservices.kernel.server.interception.api.Context;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * This factory provides factories for creating context objects
  */
 public abstract class ContextFactory {
     /**
+     * Validate that the arg types match the constructor parameter types
+     * @param args the arguments
+     * @param constructorTypes the type of the expected constructor parameters
+     */
+    private void validateArgs(Object[] args, Class<?>[] constructorTypes) {
+        if (args.length != constructorTypes.length) {
+            throw new RuntimeException("The number of arguments must match the constructor types");
+        }
+
+        for (int i = 0; i < args.length; i++) {
+            Object arg = args[i];
+            Class<?> type = constructorTypes[i];
+            Class<?> argClass = arg.getClass();
+
+            if (!type.isAssignableFrom(argClass)) {
+                throw new RuntimeException("Incompatible constructor parameter type. Constructor type " + type + ", argument type " + argClass);
+            }
+        }
+    }
+
+    /**
      * Construct the context from the arguments
      * @param contextClass the class object for the context
      * @param args the arguments
      * @return the constructed object
      */
-    protected Context constructFromArgs(Class<? extends Context> contextClass, Object[] args) {
+    protected Context constructFromArgs(Class<? extends Context> contextClass, Object[] args, Class<?>[] constructorTypes) {
         Constructor<? extends Context> constructor;
 
         try {
+            this.validateArgs(args, constructorTypes);
+
             if (args.length == 0) {
                 constructor = contextClass.getDeclaredConstructor();
             } else {
-                List<Class<?>> parameterList = Arrays.stream(args)
-                        .map(Object::getClass)
-                        .collect(Collectors.toList());
-                Class<?>[] parameters = new Class<?>[parameterList.size()];
-                parameters = parameterList.toArray(parameters);
-
-                constructor = contextClass.getDeclaredConstructor(parameters);
+                constructor = contextClass.getDeclaredConstructor(constructorTypes);
             }
 
             if (args.length == 0) {
@@ -44,8 +60,8 @@ public abstract class ContextFactory {
 
     /**
      * Create the context
-     * @param args optional args to pass in at construction time
+     * @param args arguments to pass into the context by reflection
      * @return the context to create
      */
-    public abstract Context createContext(Object...args);
+    public abstract Context createContext(Object... args);
 }

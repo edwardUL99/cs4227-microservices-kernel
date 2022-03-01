@@ -1,6 +1,7 @@
-package ie.ul.microservices.kernel.server.interception;
+package ie.ul.microservices.kernel.server.interception.api;
 
 import ie.ul.microservices.kernel.server.models.Microservice;
+import ie.ul.microservices.kernel.server.models.URL;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -19,6 +20,18 @@ public interface MappingContext extends Context {
      * @return the request being mapped
      */
     HttpServletRequest getRequest();
+
+    /**
+     * Get the URL the request is being mapped to
+     * @return the URL the request is being mapped to
+     */
+    URL getURL();
+
+    /**
+     * Set the url of the request
+     * @param url the new URL
+     */
+    void setURL(URL url);
 
     /**
      * Set the microservice in the mapping context

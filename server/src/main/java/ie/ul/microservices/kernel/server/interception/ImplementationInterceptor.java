@@ -1,5 +1,7 @@
 package ie.ul.microservices.kernel.server.interception;
 
+import ie.ul.microservices.kernel.server.interception.api.MappingContext;
+import ie.ul.microservices.kernel.server.interception.api.SingleMappingInterceptor;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
@@ -19,10 +21,11 @@ public class ImplementationInterceptor extends SingleMappingInterceptor {
      * This interception point is called before the mapping takes place
      *
      * @param context the object holding information relating to mapping the request
-     * @param next    the next interceptor in the chain, this should be called for processing to continue
+     * @param chain    the next interceptor in the chain, this should be called for processing to continue
      */
     @Override
-    public void onBeforeMapping(MappingContext context, MappingInterceptorChain next) {
-        super.onBeforeMapping(context, next);
+    public void onBeforeMapping(MappingContext context, MappingInterceptorChain chain) {
+        System.out.println("Received context " + context + " with URL " + context.getURL());
+        chain.next(context);
     }
 }

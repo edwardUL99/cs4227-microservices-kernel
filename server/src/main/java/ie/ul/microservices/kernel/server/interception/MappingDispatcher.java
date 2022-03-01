@@ -1,22 +1,30 @@
 package ie.ul.microservices.kernel.server.interception;
 
-import java.util.function.Consumer;
+import ie.ul.microservices.kernel.server.interception.api.InterceptorChainEnd;
+import ie.ul.microservices.kernel.server.interception.api.MappingContext;
+import ie.ul.microservices.kernel.server.interception.api.MappingInterceptor;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This class represents the dispatcher to dispatch to mapping interceptors
  */
 public class MappingDispatcher {
     /**
-     * The chain for registering onBeforeMapping interceptors
+     * The map of registered interceptors
      */
-    private final MappingInterceptorChain onBeforeMapping;
-    /**
-     * The chain for registering onAfterMapping interceptors
-     */
-    private final MappingInterceptorChain onAfterMapping;
+    private final Map<RegistrationStrategy, List<MappingInterceptor>> interceptors = new HashMap<>();
 
     /**
-     * The singleton instance
+     * The end of the interceptor chains
+     */
+    private final InterceptorChainEnd<MappingContext> chainEnd;
+
+    /**
+     * The instance of the dispatcher
      */
     private static MappingDispatcher instance;
 
@@ -25,25 +33,33 @@ public class MappingDispatcher {
      * @param end the end of the interceptor chain to consume context objects
      */
     public MappingDispatcher(InterceptorChainEnd<MappingContext> end) {
-        this.onBeforeMapping = new BeforeMappingChain(end);
-        this.onAfterMapping = new AfterMappingChain(end);
+        this.chainEnd = end;
+
+        for (RegistrationStrategy strategy : RegistrationStrategy.values()) {
+            if (strategy != RegistrationStrategy.ALL) {
+                this.interceptors.put(strategy, new ArrayList<>());
+            }
+        }
     }
 
     /**
-     * Evaluate the registration strategy and invoke the action
-     * @param strategy the strategy to evaluate
-     * @param action perform the action on the interceptor chain that matches the registration strategy
+     * Initialise the mapping dispatcher
+     * @param chainEnd the end of the chain to consume the mapping context
      */
-    private void evaluateAndInvokeRegistrationStrategy(RegistrationStrategy strategy, Consumer<MappingInterceptorChain> action) {
-        switch (strategy) {
-            case BEFORE: action.accept(onBeforeMapping);
-                        break;
-            case AFTER: action.accept(onAfterMapping);
-                        break;
-            case ALL: action.accept(onBeforeMapping);
-                    action.accept(onAfterMapping);
-                    break;
+    public static void initialise(InterceptorChainEnd<MappingContext> chainEnd) {
+        instance = new MappingDispatcher(chainEnd);
+    }
+
+    /**
+     * Retrieve the singleton instance
+     * @return the singleton instance of the MappingDispatcher
+     */
+    public static MappingDispatcher getInstance() {
+        if (instance == null) {
+            throw new IllegalArgumentException("The MappingDispatcher is not initialised. Call initialise");
         }
+
+        return instance;
     }
 
     /**
@@ -52,7 +68,16 @@ public class MappingDispatcher {
      * @param strategy the token identifying what the interceptor is being registered for
      */
     public void registerMappingInterceptor(MappingInterceptor interceptor, RegistrationStrategy strategy) {
-        this.evaluateAndInvokeRegistrationStrategy(strategy, chain -> chain.addInterceptor(interceptor));
+        if (strategy == RegistrationStrategy.ALL) {
+            for (RegistrationStrategy s : RegistrationStrategy.values()) {
+                if (s != RegistrationStrategy.ALL) {
+                    this.registerMappingInterceptor(interceptor, s);
+                }
+            }
+        } else {
+            List<MappingInterceptor> interceptors = this.interceptors.get(strategy);
+            interceptors.add(interceptor);
+        }
     }
 
     /**
@@ -61,43 +86,54 @@ public class MappingDispatcher {
      * @param strategy the strategy used to register the interceptor
      */
     public void unregisterMappingInterceptor(MappingInterceptor interceptor, RegistrationStrategy strategy) {
-        this.evaluateAndInvokeRegistrationStrategy(strategy, chain -> chain.removeInterceptor(interceptor));
+        if (strategy == RegistrationStrategy.ALL) {
+            for (RegistrationStrategy s : RegistrationStrategy.values()) {
+                if (s != RegistrationStrategy.ALL) {
+                    this.unregisterMappingInterceptor(interceptor, s);
+                }
+            }
+        } else {
+            List<MappingInterceptor> interceptors = this.interceptors.get(strategy);
+            interceptors.remove(interceptor);
+        }
+    }
+
+    /**
+     * Construct the chain of before mapping interceptors
+     * @return the constructed chain
+     */
+    private MappingInterceptorChain constructBeforeChain() {
+        MappingInterceptorChain chain = new BeforeMappingChain(chainEnd);
+        this.interceptors.get(RegistrationStrategy.BEFORE).forEach(chain::addInterceptor);
+
+        return chain;
+    }
+
+    /**
+     * Construct the chain of after mapping interceptors
+     * @return the constructed chain
+     */
+    private MappingInterceptorChain constructAfterChain() {
+        MappingInterceptorChain chain = new AfterMappingChain(chainEnd);
+        this.interceptors.get(RegistrationStrategy.AFTER).forEach(chain::addInterceptor);
+
+        return chain;
     }
 
     /**
      * Dispatches the context to the onBeforeMapping interceptor chain
      * @param context the context to dispatch
      */
-    public void onBeforeMapping(MappingContext context) {
-        this.onBeforeMapping.next(context);
+    public synchronized void onBeforeMapping(MappingContext context) {
+        this.constructBeforeChain().next(context);
     }
 
     /**
      * Dispatches the context to the onAfterMapping interceptor chain
      * @param context the context to dispatch
      */
-    public void onAfterMapping(MappingContext context) {
-        this.onAfterMapping.next(context);
-    }
-
-    /**
-     * Initialise the singleton instance for the dispatcher.
-     * @param end the end of the chain to consume the context passed through the chain
-     */
-    public static void initialise(InterceptorChainEnd<MappingContext> end) {
-        instance = new MappingDispatcher(end);
-    }
-
-    /**
-     * Get the singleton instance for the dispatcher. If {@link #initialise(InterceptorChainEnd)} has not been called, an IllegalStateException is thrown
-     * @return singleton instance of the dispatcher
-     */
-    public static MappingDispatcher getInstance() {
-        if (instance == null) {
-            throw new IllegalStateException("The MappingDispatcher has not been initialised");
-        }
-
-        return instance;
+    public synchronized void onAfterMapping(MappingContext context) {
+        this.constructAfterChain().next(context);
     }
 
     /**

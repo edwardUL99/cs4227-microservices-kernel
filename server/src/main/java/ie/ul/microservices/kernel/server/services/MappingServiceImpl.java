@@ -1,18 +1,22 @@
 package ie.ul.microservices.kernel.server.services;
 
-import ie.ul.microservices.kernel.server.interception.MappingContext;
+import ie.ul.microservices.kernel.server.Constants;
+import ie.ul.microservices.kernel.server.interception.api.MappingContext;
 import ie.ul.microservices.kernel.server.interception.MappingContextFactory;
 import ie.ul.microservices.kernel.server.interception.MappingDispatcher;
 import ie.ul.microservices.kernel.server.mapping.MappingException;
 import ie.ul.microservices.kernel.server.mapping.MappingResult;
+import ie.ul.microservices.kernel.server.models.CurrentRequest;
 import ie.ul.microservices.kernel.server.models.Microservice;
 import ie.ul.microservices.kernel.server.models.URL;
 import ie.ul.microservices.kernel.server.registration.Registry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -21,9 +25,10 @@ import java.util.function.Consumer;
 @Service("Mapping")
 public class MappingServiceImpl implements MappingService {
     /**
-     * The current context object for the mapping
+     * The current request
      */
-    private MappingContext context;
+    @Resource(name = "currentRequest")
+    private CurrentRequest currentRequest;
     /**
      * The dispatcher instance
      */
@@ -42,7 +47,7 @@ public class MappingServiceImpl implements MappingService {
      */
     @Autowired
     public MappingServiceImpl(Registry registry) {
-        MappingDispatcher.initialise(this);
+        MappingDispatcher.initialise(this::consumeContext);
         this.dispatcher = MappingDispatcher.getInstance();
         this.registry = registry;
     }
@@ -53,9 +58,8 @@ public class MappingServiceImpl implements MappingService {
      * @param context the context passed through the chain. May be processed by any of the interceptors
      *                along the chain
      */
-    @Override
     public void consumeContext(MappingContext context) {
-        this.context = context;
+        this.currentRequest.setContext(context);
     }
 
     /**
@@ -67,14 +71,16 @@ public class MappingServiceImpl implements MappingService {
     private MappingContext dispatch(MappingContext context, Consumer<MappingContext> action) {
         action.accept(context);
 
-        if (this.context == null || this.context.terminated()) {
+        MappingContext currentContext = this.currentRequest.getContext();
+
+        if (currentContext == null || currentContext.terminated()) {
             return null;
         } else {
-            if (!this.context.equals(context)) {
-                context = this.context;
+            if (!currentContext.equals(context)) {
+                context = currentContext;
             }
 
-            this.context = null;
+            this.currentRequest.setContext(null);
 
             return context;
         }
@@ -104,14 +110,15 @@ public class MappingServiceImpl implements MappingService {
      * @param request the request to map
      */
     private URL mapURLFromMicroservice(Microservice microservice, HttpServletRequest request) {
-        URL url = URL.fromParameters(request.getScheme(), microservice.getHost(), microservice.getPort(), request.getRequestURI(), request.getQueryString());
+        URL url = URL.fromParameters(request.getScheme(), microservice.getHost(), microservice.getPort(),
+                Constants.removeGatewayURL(request.getRequestURI()), request.getQueryString());
         String[] bodyParts = url.getBodyParts();
 
         if (bodyParts.length > 0) {
             bodyParts = Arrays.copyOfRange(bodyParts, 1, bodyParts.length);
         }
 
-        url.setBody(String.join("/", bodyParts));
+        url.setBody(Constants.joinURL(bodyParts));
 
         return url;
     }
@@ -120,10 +127,16 @@ public class MappingServiceImpl implements MappingService {
      * If the microservice has not been mapped by a pre=mapping interceptor, use this method to map the microservice
      * name and find it
      * @param result the result being constructed
-     * @param request the request being mapped
+     * @param context the mapping context
      */
-    private void mapAndFindMicroservice(MappingResult result, HttpServletRequest request) {
-        URL url = URL.fromServletRequest(request);
+    private void mapAndFindMicroservice(MappingResult result, MappingContext context) {
+        URL url = context.getURL();
+
+        if (url == null) {
+            url = URL.fromServletRequest(context.getRequest());
+            context.setURL(url);
+        }
+
         String[] bodyParts = url.getBodyParts();
 
         if (bodyParts.length == 0) {
@@ -131,15 +144,17 @@ public class MappingServiceImpl implements MappingService {
         } else {
             String microserviceName = bodyParts[0];
             String[] bodyPartsNoName = Arrays.copyOfRange(bodyParts, 1, bodyParts.length);
+            String newBody = Constants.joinURL(bodyPartsNoName);
 
             Microservice microservice = this.registry.getMicroservice(microserviceName);
 
             if (microservice != null && microservice.isHealthy()) {
                 url = URL.fromParameters(url.getScheme(), microservice.getHost(), microservice.getPort(),
-                        String.join("/", bodyPartsNoName), url.getQueryParams());
+                        newBody, url.getQueryParams());
             } else {
                 url.setHostname(null);
                 url.setPort(0); // we don't know what to map to
+                url.setBody(newBody);
             }
 
             result.setUrl(url);
@@ -153,15 +168,15 @@ public class MappingServiceImpl implements MappingService {
      * @param result the result being constructed
      */
     private void doMap(MappingContext context, MappingResult result) {
-        HttpServletRequest request = context.getRequest();
         Microservice mapped = context.getMicroservice();
 
         if (mapped != null) {
-            URL url = mapURLFromMicroservice(mapped, request);
+            URL url = mapURLFromMicroservice(mapped, context.getRequest());
+            context.setURL(url);
             result.setUrl(url);
             result.setMicroservice(mapped);
         } else {
-            mapAndFindMicroservice(result, request);
+            mapAndFindMicroservice(result, context);
         }
 
         context.setMicroservice(result.getMicroservice());
@@ -191,6 +206,10 @@ public class MappingServiceImpl implements MappingService {
             if (context == null) {
                 result.setTerminated(true);
             } else {
+                if (context.getURL() == null) {
+                    context.setURL(URL.fromServletRequest(context.getRequest()));
+                }
+
                 result.setMicroservice(context.getMicroservice());
             }
         }

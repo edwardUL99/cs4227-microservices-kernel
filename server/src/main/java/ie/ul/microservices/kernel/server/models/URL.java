@@ -1,6 +1,11 @@
 package ie.ul.microservices.kernel.server.models;
 
+import ie.ul.microservices.kernel.server.Constants;
+
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * This class represents a URL received into the gateway
@@ -116,11 +121,43 @@ public class URL {
     }
 
     /**
+     * Returns the URL as string
+     *
+     * @return a string representation of the object.
+     */
+    @Override
+    public String toString() {
+        String result = this.scheme + "://" + this.hostname;
+
+        if (this.port != 0) {
+            result += ":" + this.port;
+        }
+
+        if (this.body != null && !this.body.startsWith("/")) {
+            result += "/" + this.body;
+        } else {
+            result += this.body;
+        }
+
+        boolean endsWithSlash = result.endsWith("/");
+        if (this.queryParams != null && !this.queryParams.isEmpty()) {
+            if (endsWithSlash)
+                result = result.substring(0, result.length() - 1);
+
+            result += "?" + this.queryParams;
+        } else if (!endsWithSlash) {
+            result += "/";
+        }
+
+        return result;
+    }
+
+    /**
      * Get the request body split by the path delimiter /
      * @return the split URL body
      */
     public String[] getBodyParts() {
-        return this.body.split("/");
+        return Constants.splitURL(this.body);
     }
 
     /**
@@ -129,7 +166,8 @@ public class URL {
      * @return the created URL
      */
     public static URL fromServletRequest(HttpServletRequest request) {
-        return fromParameters(request.getScheme(), request.getLocalName(), request.getLocalPort(), request.getRequestURI(), request.getQueryString());
+        return fromParameters(request.getScheme(), request.getLocalName(), request.getLocalPort(),
+                Constants.removeGatewayURL(request.getRequestURI()), request.getQueryString());
     }
 
     public static URL fromParameters(String scheme, String hostname, int port, String body, String queryParams) {

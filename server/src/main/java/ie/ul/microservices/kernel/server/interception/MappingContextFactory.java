@@ -1,5 +1,9 @@
 package ie.ul.microservices.kernel.server.interception;
 
+import ie.ul.microservices.kernel.server.interception.api.MappingContext;
+
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * This factory is a context factory used for creating MappingContexts
  */
@@ -12,6 +16,7 @@ public class MappingContextFactory extends ContextFactory {
      */
     @Override
     public MappingContext createContext(Object... args) {
-        return (MappingContext) constructFromArgs(DefaultMappingContext.class, args);
+        Class<?>[] parameters = {HttpServletRequest.class};
+        return (MappingContext) constructFromArgs(DefaultMappingContext.class, args, parameters);
     }
 }

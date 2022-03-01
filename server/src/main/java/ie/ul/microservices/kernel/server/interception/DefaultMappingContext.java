@@ -1,6 +1,8 @@
 package ie.ul.microservices.kernel.server.interception;
 
+import ie.ul.microservices.kernel.server.interception.api.MappingContext;
 import ie.ul.microservices.kernel.server.models.Microservice;
+import ie.ul.microservices.kernel.server.models.URL;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -17,6 +19,10 @@ public class DefaultMappingContext implements MappingContext {
      */
     private final HttpServletRequest request;
     /**
+     * The url the request is being mapped to
+     */
+    private URL url;
+    /**
      * This holds the value of terminated for the mapping this context relates to
      */
     private boolean terminated;
@@ -26,6 +32,7 @@ public class DefaultMappingContext implements MappingContext {
      */
     public DefaultMappingContext(HttpServletRequest request) {
         this(null, request);
+        this.url = URL.fromServletRequest(request);
     }
 
     /**
@@ -56,6 +63,26 @@ public class DefaultMappingContext implements MappingContext {
     @Override
     public HttpServletRequest getRequest() {
         return this.request;
+    }
+
+    /**
+     * Get the URL the request is being mapped to
+     *
+     * @return the URL the request is being mapped to
+     */
+    @Override
+    public URL getURL() {
+        return this.url;
+    }
+
+    /**
+     * Set the url of the request
+     *
+     * @param url the new URL
+     */
+    @Override
+    public void setURL(URL url) {
+        this.url = url;
     }
 
     /**

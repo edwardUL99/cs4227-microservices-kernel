@@ -1,5 +1,9 @@
 package ie.ul.microservices.kernel.server.interception;
 
+import ie.ul.microservices.kernel.server.interception.api.InterceptorChainEnd;
+import ie.ul.microservices.kernel.server.interception.api.MappingContext;
+import ie.ul.microservices.kernel.server.interception.api.MappingInterceptor;
+
 /**
  * This class represents the interception chain to handle onBeforeMapping interceptions
  */
