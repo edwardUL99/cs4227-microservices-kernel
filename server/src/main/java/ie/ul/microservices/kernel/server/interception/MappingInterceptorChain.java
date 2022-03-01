@@ -74,6 +74,7 @@ public abstract class MappingInterceptorChain implements InterceptionChain<Mappi
     @Override
     public void terminate(MappingContext context) {
         this.iterator = null;
+        context.terminate();
         this.end.consumeContext(context);
     }
 

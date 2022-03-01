@@ -1,18 +1,21 @@
 package ie.ul.microservices.kernel.server.registration;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import ie.ul.microservices.kernel.server.models.Microservice;
+import org.springframework.stereotype.Service;
 
+@Service
 public class RegistryImpl implements Registry {
 
     /**
      * A map that use the name of the microservice as the key
-     * and the microservice instance with the specfied name as the value
+     * and the microservice instance with the specified name as the value
      */
-    private Map<String, Microservice> microservices;
+    private final Map<String, Microservice> microservices = new HashMap<>();
 
     @Override
     public List<Microservice> getMicroservices() {

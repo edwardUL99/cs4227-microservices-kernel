@@ -6,10 +6,10 @@ package ie.ul.microservices.kernel.server.models;
  */
 public class Microservice {
 
-    String host;
-    String port;
-    String microserviceName;
-    boolean healthStatus;
+    private String host;
+    private int port;
+    private String microserviceName;
+    private boolean healthStatus;
 
     /**
      * gets the name of the microservice
@@ -33,5 +33,53 @@ public class Microservice {
      */
     public boolean isHealthy(){
         return healthStatus;
+    }
+
+    /**
+     * Get the hostname of the microservice
+     * @return the microservice hostname
+     */
+    public String getHost() {
+        return host;
+    }
+
+    /**
+     * Set the microservice hostname
+     * @param host the host of the microservice
+     */
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    /**
+     * The port of the microservice
+     * @return the microservice port
+     */
+    public int getPort() {
+        return port;
+    }
+
+    /**
+     * Set the port of the microservice
+     * @param port the microservice port
+     */
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    /**
+     * Get the name of the microservice
+     * @return the microservice name
+     */
+    public String getMicroserviceName() {
+        return microserviceName;
+    }
+
+    /**
+     * Set the microservice name
+     * @param microserviceName the name of the microservice
+     */
+    public void setMicroserviceName(String microserviceName) {
+        this.microserviceName = microserviceName;
     }
 }
