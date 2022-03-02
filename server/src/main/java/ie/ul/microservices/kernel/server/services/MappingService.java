@@ -13,7 +13,8 @@ public interface MappingService {
     /**
      * Map the request to the microservice instance
      * @param request the request to map
-     * @return the mapped microservice. Null if no microservice can be found
+     * @return the result of mapping. If {@link MappingResult#isTerminated()} returns true, the request should not be forwarded
+     * and an appropriate response saying the request cannot be handled should be returned
      * @throws MappingException if an error occurs during mapping.
      */
     MappingResult mapRequest(HttpServletRequest request) throws MappingException;

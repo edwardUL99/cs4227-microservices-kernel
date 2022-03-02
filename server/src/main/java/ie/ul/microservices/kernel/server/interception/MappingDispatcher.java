@@ -10,7 +10,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This class represents the dispatcher to dispatch to mapping interceptors
+ * This class represents the dispatcher to dispatch to mapping interceptors. All interceptors implementing the
+ * {@link MappingInterceptor} interface should be registered through this dispatcher.
  */
 public class MappingDispatcher {
     /**
@@ -118,6 +119,14 @@ public class MappingDispatcher {
         this.interceptors.get(RegistrationStrategy.AFTER).forEach(chain::addInterceptor);
 
         return chain;
+    }
+
+    /**
+     * Clears all registered interceptors
+     */
+    public synchronized void clearInterceptors() {
+        for (List<MappingInterceptor> interceptors : this.interceptors.values())
+            interceptors.clear();
     }
 
     /**

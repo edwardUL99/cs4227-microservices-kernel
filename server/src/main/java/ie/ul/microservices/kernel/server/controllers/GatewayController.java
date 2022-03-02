@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Objects;
 
 /**
  * This controller takes all requests from the clients and then does some mapping and forwards the request
@@ -52,6 +53,11 @@ public class GatewayController {
     @RequestMapping("/**")
     public ResponseEntity<?> gateway(HttpServletRequest request, HttpServletResponse response) {
         MappingResult result = this.mappingService.mapRequest(request);
+        ResponseEntity<?> resultResponse = result.getResponse();
+
+        if (result.isTerminated())
+            return Objects.requireNonNullElseGet(resultResponse, () -> ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build());
+
         return ResponseEntity.ok(result);
     }
 

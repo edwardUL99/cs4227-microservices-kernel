@@ -2,6 +2,7 @@ package ie.ul.microservices.kernel.server.mapping;
 
 import ie.ul.microservices.kernel.server.models.Microservice;
 import ie.ul.microservices.kernel.server.models.URL;
+import org.springframework.http.ResponseEntity;
 
 import java.util.Objects;
 
@@ -21,23 +22,29 @@ public class MappingResult {
      * The mapped microservice
      */
     private Microservice microservice;
+    /**
+     * The response entity from the context.
+     */
+    private ResponseEntity<?> response;
 
     /**
      * Create a default MappingResult
      */
     public MappingResult() {
-        this(false, null, null);
+        this(false, null, null, null);
     }
 
     /**
      * Construct a MappingResult
      * @param terminated true if the mapping has been terminated
      * @param microservice the mapped microservice
+     * @param response the response to set
      */
-    public MappingResult(boolean terminated, URL url, Microservice microservice) {
+    public MappingResult(boolean terminated, URL url, Microservice microservice, ResponseEntity<?> response) {
         this.terminated = terminated;
         this.url = url;
         this.microservice = microservice;
+        this.setResponse(response);
     }
 
     /**
@@ -86,6 +93,25 @@ public class MappingResult {
      */
     public void setMicroservice(Microservice microservice) {
         this.microservice = microservice;
+    }
+
+    /**
+     * Get the response set on the result
+     * @return the response to set
+     */
+    public ResponseEntity<?> getResponse() {
+        return response;
+    }
+
+    /**
+     * Sets the response. If a response is set {@link #isTerminated()} will be set to true
+     * @param response the response to set
+     */
+    public void setResponse(ResponseEntity<?> response) {
+        if (response != null) {
+            this.terminated = true;
+            this.response = response;
+        }
     }
 
     /**
