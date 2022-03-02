@@ -1,7 +1,5 @@
 package ie.ul.microservices.kernel.server.interception;
 
-import ie.ul.microservices.kernel.server.interception.api.MappingContext;
-
 import javax.servlet.http.HttpServletRequest;
 
 /**

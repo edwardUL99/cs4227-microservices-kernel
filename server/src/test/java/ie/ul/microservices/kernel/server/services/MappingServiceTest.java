@@ -3,8 +3,8 @@ package ie.ul.microservices.kernel.server.services;
 import ie.ul.microservices.kernel.server.Constants;
 import ie.ul.microservices.kernel.server.interception.MappingDispatcher;
 import ie.ul.microservices.kernel.server.interception.MappingInterceptorChain;
-import ie.ul.microservices.kernel.server.interception.api.MappingContext;
-import ie.ul.microservices.kernel.server.interception.api.MappingInterceptor;
+import ie.ul.microservices.kernel.server.interception.MappingContext;
+import ie.ul.microservices.kernel.server.interception.MappingInterceptor;
 import ie.ul.microservices.kernel.server.mapping.MappingResult;
 import ie.ul.microservices.kernel.server.models.Microservice;
 import ie.ul.microservices.kernel.server.models.URL;
@@ -15,12 +15,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -121,7 +121,7 @@ class EarlyEndInterceptor implements MappingInterceptor {
      */
     @Override
     public void onBeforeMapping(MappingContext context, MappingInterceptorChain chain) {
-        // no-op
+        context.setResponse(ResponseEntity.notFound().build());
     }
 
     /**
@@ -199,7 +199,7 @@ public class MappingServiceTest {
 
     @AfterEach
     private void destroy() {
-        MappingDispatcher.getInstance().unregisterMappingInterceptor(interceptor, MappingDispatcher.RegistrationStrategy.ALL);
+        MappingDispatcher.getInstance().clearInterceptors();
         context = null;
         interceptor = null;
     }
@@ -264,15 +264,13 @@ public class MappingServiceTest {
         assertEquals(context.mappingContext.getMicroservice(), MICROSERVICE);
         assertEquals(context.mappingContext.getURL(), result.getUrl());
         verify(registry, times(0)).getMicroservice(NAME);
-
-        dispatcher.unregisterMappingInterceptor(interceptor, MappingDispatcher.RegistrationStrategy.BEFORE);
     }
 
     /**
      * This tests that if an interceptor doesn't call chain.next, mapping will stop/terminate
      */
     @Test
-    public void shouldUEndMappingIfInterceptorDoesntCallNext() {
+    public void shouldEndMappingIfInterceptorDoesntCallNext() {
         MappingDispatcher dispatcher = MappingDispatcher.getInstance();
         MappingInterceptor interceptor = new EarlyEndInterceptor();
         dispatcher.registerMappingInterceptor(interceptor, MappingDispatcher.RegistrationStrategy.BEFORE);
@@ -282,8 +280,7 @@ public class MappingServiceTest {
         MappingResult result = mappingService.mapRequest(request);
 
         assertTrue(result.isTerminated());
+        assertNotNull(result.getResponse());
         verify(registry, times(0)).getMicroservice(NAME);
-
-        dispatcher.unregisterMappingInterceptor(interceptor, MappingDispatcher.RegistrationStrategy.BEFORE);
     }
 }

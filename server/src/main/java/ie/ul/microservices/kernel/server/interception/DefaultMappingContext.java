@@ -1,8 +1,8 @@
 package ie.ul.microservices.kernel.server.interception;
 
-import ie.ul.microservices.kernel.server.interception.api.MappingContext;
 import ie.ul.microservices.kernel.server.models.Microservice;
 import ie.ul.microservices.kernel.server.models.URL;
+import org.springframework.http.ResponseEntity;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -18,6 +18,12 @@ public class DefaultMappingContext implements MappingContext {
      * The request the microservice is being mapped to
      */
     private final HttpServletRequest request;
+
+    /**
+     * A response that an interceptor can set to return instead of forwarding the request
+     */
+    private ResponseEntity<?> response;
+
     /**
      * The url the request is being mapped to
      */
@@ -53,6 +59,27 @@ public class DefaultMappingContext implements MappingContext {
     @Override
     public HttpServletRequest getRequest() {
         return this.request;
+    }
+
+    /**
+     * Get the response object that will be sent back to the client. This is usually null, but can be set using {@link #setResponse(ResponseEntity)}
+     *
+     * @return the response to send back.
+     */
+    @Override
+    public ResponseEntity<?> getResponse() {
+        return response;
+    }
+
+    /**
+     * Set the response to send back. <b>Note:</b> this overrides the response sent back from mapping. I.e. if a response entity is available
+     * after mapping, the request won't be forwarded and this response will be returned instead. Useful to send back error responses
+     *
+     * @param response the response to set in the context
+     */
+    @Override
+    public void setResponse(ResponseEntity<?> response) {
+        this.response = response;
     }
 
     /**

@@ -1,7 +1,5 @@
-package ie.ul.microservices.kernel.server.interception.api;
+package ie.ul.microservices.kernel.server.interception;
 
-import ie.ul.microservices.kernel.server.interception.MappingDispatcher;
-import ie.ul.microservices.kernel.server.interception.MappingInterceptorChain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

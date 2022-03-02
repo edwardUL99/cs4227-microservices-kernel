@@ -1,7 +1,4 @@
-package ie.ul.microservices.kernel.server.interception.api;
-
-import ie.ul.microservices.kernel.server.interception.MappingDispatcher;
-import ie.ul.microservices.kernel.server.interception.api.MappingInterceptor;
+package ie.ul.microservices.kernel.server.interception;
 
 /**
  * This class provides the base for a mapping interceptor that automatically registers itself as an interceptor that can

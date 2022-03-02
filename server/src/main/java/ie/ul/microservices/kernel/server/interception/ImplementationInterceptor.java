@@ -1,7 +1,5 @@
 package ie.ul.microservices.kernel.server.interception;
 
-import ie.ul.microservices.kernel.server.interception.api.MappingContext;
-import ie.ul.microservices.kernel.server.interception.api.SingleMappingInterceptor;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 

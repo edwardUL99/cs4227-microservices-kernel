@@ -1,7 +1,7 @@
 package ie.ul.microservices.kernel.server.services;
 
 import ie.ul.microservices.kernel.server.Constants;
-import ie.ul.microservices.kernel.server.interception.api.MappingContext;
+import ie.ul.microservices.kernel.server.interception.MappingContext;
 import ie.ul.microservices.kernel.server.interception.MappingContextFactory;
 import ie.ul.microservices.kernel.server.interception.MappingDispatcher;
 import ie.ul.microservices.kernel.server.mapping.MappingException;
@@ -11,12 +11,12 @@ import ie.ul.microservices.kernel.server.models.Microservice;
 import ie.ul.microservices.kernel.server.models.URL;
 import ie.ul.microservices.kernel.server.registration.Registry;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
-import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -73,9 +73,11 @@ public class MappingServiceImpl implements MappingService {
 
         MappingContext currentContext = this.currentRequest.getContext();
 
-        if (currentContext == null || currentContext.terminated()) {
-            return null;
-        } else {
+        if (currentContext == null && context != null) {
+            context.terminate();
+
+            return context;
+        } else if (currentContext != null){
             if (!currentContext.equals(context)) {
                 context = currentContext;
             }
@@ -83,6 +85,8 @@ public class MappingServiceImpl implements MappingService {
             this.currentRequest.setContext(null);
 
             return context;
+        } else {
+            return null;
         }
     }
 
@@ -204,6 +208,11 @@ public class MappingServiceImpl implements MappingService {
         if (!result.getMicroservice().equals(contextService)) {
             result.setMicroservice(contextService);
         }
+
+        ResponseEntity<?> response = context.getResponse();
+
+        if (response != null)
+            result.setResponse(response);
     }
 
     /**
@@ -220,15 +229,22 @@ public class MappingServiceImpl implements MappingService {
 
         context = dispatchBeforeMapping(context); // we are at the before mapping interception point, so invoke the interceptors here
 
-        if (context == null) {
+        if (context == null || context.terminated()) {
             // chain ended without terminating or context was terminated
             result.setTerminated(true);
+
+            if (context != null)
+                result.setResponse(context.getResponse());
         } else {
             doMap(context, result); // performs the mapping
             context = dispatchAfterMapping(context); // this is the after mapping interception point, so invoke the interceptors
 
-            if (context == null) {
+            if (context == null|| context.terminated()) {
+                // chain ended without terminating or context was terminated
                 result.setTerminated(true);
+
+                if (context != null)
+                    result.setResponse(context.getResponse());
             } else {
                 mergeResultAfterInterceptor(result, context);
             }
