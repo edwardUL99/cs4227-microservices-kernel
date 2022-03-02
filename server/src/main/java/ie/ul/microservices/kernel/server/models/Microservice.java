@@ -6,17 +6,66 @@ package ie.ul.microservices.kernel.server.models;
  */
 public class Microservice {
 
-    String host;
-    String port;
     String microserviceName;
+    String host;
+    int port;
     boolean healthStatus;
+    String microserviceID;
 
     /**
-     * gets the name of the microservice
-     * @return name of the microservice
+     * Get the name of the microservice
+     * @return the microservice name
      */
-    public String getName(){
+    public String getMicroserviceName() {
         return microserviceName;
+    }
+
+    /**
+     * Set the microservice name
+     * @param microserviceName the name of the microservice
+     */
+    public void setMicroserviceName(String microserviceName) {
+        this.microserviceName = microserviceName;
+    }
+
+     /**
+     * Get the hostname of the microservice
+     * @return the microservice hostname
+     */
+    public String getHost() {
+        return host;
+    }
+
+    /**
+     * Set the microservice hostname
+     * @param host the host of the microservice
+     */
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    /**
+     * The port of the microservice
+     * @return the microservice port
+     */
+    public int getPort() {
+        return port;
+    }
+
+    /**
+     * Set the port of the microservice
+     * @param port the microservice port
+     */
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    /**
+     * gets the health status of the microservice
+     * @return health status of the microservice
+     */
+    public boolean isHealthy(){
+        return healthStatus;
     }
 
     /**
@@ -28,10 +77,18 @@ public class Microservice {
     }
 
     /**
-     * gets the health status of the microservice
-     * @return health status of the microservice
+     * Get the name of the microservice
+     * @return the microservice name
      */
-    public boolean isHealthy(){
-        return healthStatus;
+    public String getMicroserviceID() {
+        return microserviceID;
+    }
+
+    /**
+     * Set the microservice name
+     * @param microserviceName the name of the microservice
+     */
+    public void setMicroserviceID(String microserviceID) {
+        this.microserviceID = microserviceID;
     }
 }
