@@ -1,10 +1,11 @@
 package ie.ul.microservices.kernel.server.services;
 
+import ie.ul.microservices.kernel.api.interception.mapping.DispatcherContext;
+import ie.ul.microservices.kernel.api.interception.mapping.MappingDispatcher;
 import ie.ul.microservices.kernel.server.Constants;
-import ie.ul.microservices.kernel.server.interception.MappingDispatcher;
-import ie.ul.microservices.kernel.server.interception.MappingInterceptorChain;
-import ie.ul.microservices.kernel.server.interception.api.MappingContext;
-import ie.ul.microservices.kernel.server.interception.api.MappingInterceptor;
+import ie.ul.microservices.kernel.api.interception.mapping.MappingInterceptorChain;
+import ie.ul.microservices.kernel.api.interception.mapping.MappingContext;
+import ie.ul.microservices.kernel.api.interception.mapping.MappingInterceptor;
 import ie.ul.microservices.kernel.server.mapping.MappingResult;
 import ie.ul.microservices.kernel.server.models.Microservice;
 import ie.ul.microservices.kernel.server.models.URL;
@@ -154,6 +155,11 @@ public class MappingServiceTest {
     private MappingService mappingService;
 
     /**
+     * The mapping dispatcher
+     */
+    private MappingDispatcher dispatcher;
+
+    /**
      * The interceptor context used for testing
      */
     private InterceptorContext context;
@@ -194,12 +200,14 @@ public class MappingServiceTest {
         interceptor = new TestInterceptor();
         interceptor.context = context;
 
-        MappingDispatcher.getInstance().registerMappingInterceptor(interceptor, MappingDispatcher.RegistrationStrategy.ALL);
+        dispatcher = DispatcherContext.getDispatcher();
+
+        dispatcher.registerMappingInterceptor(interceptor, MappingDispatcher.RegistrationStrategy.ALL);
     }
 
     @AfterEach
     private void destroy() {
-        MappingDispatcher.getInstance().clearInterceptors();
+        dispatcher.clearInterceptors();
         context = null;
         interceptor = null;
     }
@@ -248,7 +256,6 @@ public class MappingServiceTest {
      */
     @Test
     public void shouldUseInterceptorMicroservice() {
-        MappingDispatcher dispatcher = MappingDispatcher.getInstance();
         MappingInterceptor interceptor = new SetMicroserviceInterceptor();
         dispatcher.registerMappingInterceptor(interceptor, MappingDispatcher.RegistrationStrategy.BEFORE);
 
@@ -271,7 +278,6 @@ public class MappingServiceTest {
      */
     @Test
     public void shouldEndMappingIfInterceptorDoesntCallNext() {
-        MappingDispatcher dispatcher = MappingDispatcher.getInstance();
         MappingInterceptor interceptor = new EarlyEndInterceptor();
         dispatcher.registerMappingInterceptor(interceptor, MappingDispatcher.RegistrationStrategy.BEFORE);
 

@@ -1,6 +1,6 @@
 package ie.ul.microservices.kernel.server.interception;
 
-import ie.ul.microservices.kernel.server.interception.api.Context;
+import ie.ul.microservices.kernel.api.interception.Context;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

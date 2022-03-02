@@ -1,11 +1,11 @@
-package ie.ul.microservices.kernel.server.interception.api;
+package ie.ul.microservices.kernel.api.interception.mapping;
 
+import ie.ul.microservices.kernel.api.interception.Context;
 import ie.ul.microservices.kernel.server.models.Microservice;
 import ie.ul.microservices.kernel.server.models.URL;
 import org.springframework.http.ResponseEntity;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * This interface represents the context object for mapping the requests

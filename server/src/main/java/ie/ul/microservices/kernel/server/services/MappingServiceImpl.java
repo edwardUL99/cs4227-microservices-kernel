@@ -1,9 +1,11 @@
 package ie.ul.microservices.kernel.server.services;
 
+import ie.ul.microservices.kernel.api.interception.mapping.DispatcherContext;
+import ie.ul.microservices.kernel.api.interception.mapping.MappingDispatcher;
 import ie.ul.microservices.kernel.server.Constants;
-import ie.ul.microservices.kernel.server.interception.api.MappingContext;
-import ie.ul.microservices.kernel.server.interception.MappingContextFactory;
-import ie.ul.microservices.kernel.server.interception.MappingDispatcher;
+import ie.ul.microservices.kernel.api.interception.mapping.MappingContext;
+import ie.ul.microservices.kernel.server.interception.mapping.MappingContextFactory;
+import ie.ul.microservices.kernel.server.interception.mapping.MappingDispatcherImpl;
 import ie.ul.microservices.kernel.server.mapping.MappingException;
 import ie.ul.microservices.kernel.server.mapping.MappingResult;
 import ie.ul.microservices.kernel.server.models.CurrentRequest;
@@ -17,7 +19,6 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
-import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -48,8 +49,8 @@ public class MappingServiceImpl implements MappingService {
      */
     @Autowired
     public MappingServiceImpl(Registry registry) {
-        MappingDispatcher.initialise(this::consumeContext);
-        this.dispatcher = MappingDispatcher.getInstance();
+        this.dispatcher = new MappingDispatcherImpl(this::consumeContext);
+        DispatcherContext.setDispatcher(this.dispatcher);
         this.registry = registry;
     }
 
@@ -187,8 +188,6 @@ public class MappingServiceImpl implements MappingService {
         }
     }
 
-    // TODO add the code to the code tables when finished (update new files and lines)
-
     /**
      * This method merges the result from an after mapping interceptor with the context
      * @param result the result to merge the context into
@@ -196,6 +195,7 @@ public class MappingServiceImpl implements MappingService {
      */
     private void mergeResultAfterInterceptor(MappingResult result, MappingContext context) {
         Microservice contextService = context.getMicroservice();
+        Microservice resultService = result.getMicroservice();
         URL contextURL = context.getURL();
 
         if (contextURL == null) {
@@ -206,7 +206,7 @@ public class MappingServiceImpl implements MappingService {
             result.setUrl(contextURL);
         }
 
-        if (!result.getMicroservice().equals(contextService)) {
+        if (resultService != null && !resultService.equals(contextService)) {
             result.setMicroservice(contextService);
         }
 
@@ -215,6 +215,45 @@ public class MappingServiceImpl implements MappingService {
         if (response != null)
             result.setResponse(response);
     }
+
+    /**
+     * Performs the pre-mapping processing
+     * @param result the result being processed
+     * @param context the mapping context after pre-mapping, null if mapping has ended and context is no longer available
+     */
+    private MappingContext preMapping(MappingResult result, MappingContext context) {
+        context = dispatchBeforeMapping(context); // we are at the before mapping interception point, so invoke the interceptors here
+
+        if (context == null || context.terminated()) {
+            // chain ended without terminating or context was terminated
+            result.setTerminated(true);
+
+            if (context != null)
+                result.setResponse(context.getResponse());
+        }
+
+        return context;
+    }
+
+    /**
+     * Performs the post mapping processing
+     * @param result the result being processed
+     * @param context the mapping context
+     */
+    private void postMapping(MappingResult result, MappingContext context) {
+        context = dispatchAfterMapping(context); // this is the after mapping interception point, so invoke the interceptors
+
+        if (context == null|| context.terminated()) {
+            // chain ended without terminating or context was terminated
+            result.setTerminated(true);
+
+            if (context != null)
+                result.setResponse(context.getResponse());
+        } else {
+            mergeResultAfterInterceptor(result, context);
+        }
+    }
+
 
     /**
      * Map the request to the microservice instance
@@ -228,27 +267,11 @@ public class MappingServiceImpl implements MappingService {
         MappingResult result = new MappingResult();
         MappingContext context = contextFactory.createContext(request);
 
-        context = dispatchBeforeMapping(context); // we are at the before mapping interception point, so invoke the interceptors here
+        context = preMapping(result, context);
 
-        if (context == null || context.terminated()) {
-            // chain ended without terminating or context was terminated
-            result.setTerminated(true);
-
-            if (context != null)
-                result.setResponse(context.getResponse());
-        } else {
-            doMap(context, result); // performs the mapping
-            context = dispatchAfterMapping(context); // this is the after mapping interception point, so invoke the interceptors
-
-            if (context == null|| context.terminated()) {
-                // chain ended without terminating or context was terminated
-                result.setTerminated(true);
-
-                if (context != null)
-                    result.setResponse(context.getResponse());
-            } else {
-                mergeResultAfterInterceptor(result, context);
-            }
+        if (context != null && !context.terminated()) {
+            doMap(context, result);
+            postMapping(result, context);
         }
 
         return result;

@@ -1,6 +1,6 @@
 package ie.ul.microservices.kernel.server.models;
 
-import ie.ul.microservices.kernel.server.interception.api.MappingContext;
+import ie.ul.microservices.kernel.api.interception.mapping.MappingContext;
 
 /**
  * This class holds the parameters for managing a current request being mapped
