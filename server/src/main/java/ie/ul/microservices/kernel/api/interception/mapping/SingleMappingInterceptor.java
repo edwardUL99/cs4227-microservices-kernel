@@ -1,4 +1,4 @@
-package ie.ul.microservices.kernel.server.interception;
+package ie.ul.microservices.kernel.api.interception.mapping;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +11,10 @@ public abstract class SingleMappingInterceptor implements MappingInterceptor {
     /**
      * The strategy that was used to register the interceptor with
      */
-    protected final MappingDispatcher.RegistrationStrategy strategy;
+    protected MappingDispatcher.RegistrationStrategy strategy;
+
+    // Added to prevent the protected constructor being autowired by spring
+    private SingleMappingInterceptor() {}
 
     /**
      * Create and register the interceptor with the given strategy
@@ -26,7 +29,7 @@ public abstract class SingleMappingInterceptor implements MappingInterceptor {
         }
 
         this.strategy = strategy;
-        MappingDispatcher.getInstance().registerMappingInterceptor(this, this.strategy);
+        DispatcherContext.getDispatcher().registerMappingInterceptor(this, this.strategy);
     }
 
     /**
@@ -49,13 +52,5 @@ public abstract class SingleMappingInterceptor implements MappingInterceptor {
     @Override
     public void onAfterMapping(MappingContext context, MappingInterceptorChain chain) {
         // no-op
-    }
-
-    /**
-     * Get the strategy used to register the interceptor
-     * @return the strategy used registering the interceptor
-     */
-    public MappingDispatcher.RegistrationStrategy getStrategy() {
-        return strategy;
     }
 }

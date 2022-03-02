@@ -1,7 +1,5 @@
-package ie.ul.microservices.kernel.server.interception;
+package ie.ul.microservices.kernel.api.interception.mapping;
 
-import ie.ul.microservices.kernel.api.interception.mapping.MappingContext;
-import ie.ul.microservices.kernel.api.interception.mapping.MappingInterceptorChain;
 import org.springframework.http.ResponseEntity;
 
 /**

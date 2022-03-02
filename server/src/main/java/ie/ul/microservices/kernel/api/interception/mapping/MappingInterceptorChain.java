@@ -1,4 +1,7 @@
-package ie.ul.microservices.kernel.server.interception;
+package ie.ul.microservices.kernel.api.interception.mapping;
+
+import ie.ul.microservices.kernel.api.interception.InterceptionChain;
+import ie.ul.microservices.kernel.server.interception.InterceptorChainEnd;
 
 import java.util.ArrayList;
 import java.util.List;

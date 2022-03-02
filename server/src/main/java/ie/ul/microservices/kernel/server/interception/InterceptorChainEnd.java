@@ -1,5 +1,7 @@
 package ie.ul.microservices.kernel.server.interception;
 
+import ie.ul.microservices.kernel.api.interception.Context;
+
 /**
  * This interface represents the consumer at the end of an InterceptorChain. It consumes the context that was passed
  * through the chain

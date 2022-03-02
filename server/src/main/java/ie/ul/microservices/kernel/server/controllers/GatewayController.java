@@ -56,7 +56,9 @@ public class GatewayController {
         ResponseEntity<?> resultResponse = result.getResponse();
 
         if (result.isTerminated())
-            return Objects.requireNonNullElseGet(resultResponse, () -> ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build());
+            return Objects.requireNonNullElseGet(resultResponse, () -> ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build());
+        else if (result.getMicroservice() == null)
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
 
         return ResponseEntity.ok(result);
     }

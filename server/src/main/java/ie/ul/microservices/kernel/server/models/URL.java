@@ -3,9 +3,6 @@ package ie.ul.microservices.kernel.server.models;
 import ie.ul.microservices.kernel.server.Constants;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -128,7 +125,15 @@ public class URL {
      */
     @Override
     public String toString() {
-        String result = this.scheme + "://" + this.hostname;
+        String result = "";
+
+        if (this.scheme != null) {
+            result += this.scheme + "://";
+        }
+
+        if (this.hostname != null) {
+            result += this.hostname;
+        }
 
         if (this.port != 0) {
             result += ":" + this.port;

@@ -1,4 +1,4 @@
-package ie.ul.microservices.kernel.server.interception;
+package ie.ul.microservices.kernel.api.interception;
 
 /**
  * This interface represents the chain for interceptors
