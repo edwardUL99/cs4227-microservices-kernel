@@ -3,6 +3,8 @@ package ie.ul.microservices.kernel.server.mapping;
 import ie.ul.microservices.kernel.server.models.Microservice;
 import ie.ul.microservices.kernel.server.models.URL;
 
+import java.util.Objects;
+
 /**
  * This class represents the result of mapping
  */
@@ -84,5 +86,27 @@ public class MappingResult {
      */
     public void setMicroservice(Microservice microservice) {
         this.microservice = microservice;
+    }
+
+    /**
+     * Check if this result is equal to the provided result
+     * @param o the other object to compare to
+     * @return true if equal, false if not
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MappingResult result = (MappingResult) o;
+        return terminated == result.terminated && Objects.equals(url, result.url) && Objects.equals(microservice, result.microservice);
+    }
+
+    /**
+     * Generate the hashcode for this object
+     * @return the generated hashcode
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(terminated, url, microservice);
     }
 }

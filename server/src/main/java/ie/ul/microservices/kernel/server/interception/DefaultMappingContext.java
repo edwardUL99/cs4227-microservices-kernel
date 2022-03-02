@@ -46,16 +46,6 @@ public class DefaultMappingContext implements MappingContext {
     }
 
     /**
-     * Get the name of the microservice the request is being mapped to. Like the host, this may not be available yet.
-     *
-     * @return the name of the microservice
-     */
-    @Override
-    public Microservice getMicroservice() {
-        return null;
-    }
-
-    /**
      * Get the request object received representing the request being mapped
      *
      * @return the request being mapped
@@ -83,6 +73,16 @@ public class DefaultMappingContext implements MappingContext {
     @Override
     public void setURL(URL url) {
         this.url = url;
+    }
+
+    /**
+     * Get the name of the microservice the request is being mapped to. Like the host, this may not be available yet.
+     *
+     * @return the name of the microservice
+     */
+    @Override
+    public Microservice getMicroservice() {
+        return this.microservice;
     }
 
     /**

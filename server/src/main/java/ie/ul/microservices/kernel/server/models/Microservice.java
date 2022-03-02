@@ -1,5 +1,7 @@
 package ie.ul.microservices.kernel.server.models;
 
+import java.util.Objects;
+
 /**
  * This class represents a Microservice instance that has been registered on the kernel
  * TODO decide what fields to add to it
@@ -10,6 +12,17 @@ public class Microservice {
     private int port;
     private String microserviceName;
     private boolean healthStatus;
+
+    public Microservice(String host, int port, String microserviceName, boolean healthStatus) {
+        this.host = host;
+        this.port = port;
+        this.microserviceName = microserviceName;
+        this.healthStatus = healthStatus;
+    }
+
+    public Microservice() {
+        this(null, 0, null, false);
+    }
 
     /**
      * gets the name of the microservice
@@ -81,5 +94,18 @@ public class Microservice {
      */
     public void setMicroserviceName(String microserviceName) {
         this.microserviceName = microserviceName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Microservice that = (Microservice) o;
+        return port == that.port && healthStatus == that.healthStatus && Objects.equals(host, that.host) && Objects.equals(microserviceName, that.microserviceName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(host, port, microserviceName, healthStatus);
     }
 }

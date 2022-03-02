@@ -6,6 +6,7 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 // TODO delete this when proper interceptors are implemented. Shows how an interceptor is registered, must use the same @Component and @DependsOn annotations
+// TODO This is only necessary if the interceptor needs dependency injection. Otherwise, it may be ok without @Component and manually instantiate it somewhere so it registers
 
 @Component
 @DependsOn("Interception") // needs interception to be setup first

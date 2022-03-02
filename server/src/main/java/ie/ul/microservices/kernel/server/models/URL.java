@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * This class represents a URL received into the gateway
@@ -158,6 +159,28 @@ public class URL {
      */
     public String[] getBodyParts() {
         return Constants.splitURL(this.body);
+    }
+
+    /**
+     * Check if this url is equal to the provided url
+     * @param o the other object to compare to
+     * @return true if equal, false if not
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        URL url = (URL) o;
+        return port == url.port && Objects.equals(scheme, url.scheme) && Objects.equals(hostname, url.hostname) && Objects.equals(body, url.body) && Objects.equals(queryParams, url.queryParams);
+    }
+
+    /**
+     * Generate the hashcode for this object
+     * @return the generated hashcode
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(scheme, hostname, port, body, queryParams);
     }
 
     /**

@@ -14,6 +14,11 @@ public class Constants {
     public static final String API_GATEWAY = "/api/gateway";
 
     /**
+     * A header to mark the request as being passed through the kernel
+     */
+    public static final String KERNEL_HEADER = "X-MICROSERVICE-KERNEL";
+
+    /**
      * Remove the first part of the gateway url (/api/gateway) from the url
      * @param url the url body to remove
      * @return the url parts without gateway url

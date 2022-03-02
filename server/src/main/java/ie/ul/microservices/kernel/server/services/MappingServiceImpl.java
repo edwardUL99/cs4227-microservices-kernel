@@ -58,7 +58,7 @@ public class MappingServiceImpl implements MappingService {
      * @param context the context passed through the chain. May be processed by any of the interceptors
      *                along the chain
      */
-    public void consumeContext(MappingContext context) {
+    private void consumeContext(MappingContext context) {
         this.currentRequest.setContext(context);
     }
 
@@ -177,9 +177,33 @@ public class MappingServiceImpl implements MappingService {
             result.setMicroservice(mapped);
         } else {
             mapAndFindMicroservice(result, context);
+            context.setURL(result.getUrl());
+            context.setMicroservice(result.getMicroservice());
+        }
+    }
+
+    // TODO add the code to the code tables when finished (update new files and lines)
+
+    /**
+     * This method merges the result from an after mapping interceptor with the context
+     * @param result the result to merge the context into
+     * @param context the context to merge into the result
+     */
+    private void mergeResultAfterInterceptor(MappingResult result, MappingContext context) {
+        Microservice contextService = context.getMicroservice();
+        URL contextURL = context.getURL();
+
+        if (contextURL == null) {
+            context.setURL(URL.fromServletRequest(context.getRequest()));
         }
 
-        context.setMicroservice(result.getMicroservice());
+        if (!result.getUrl().equals(contextURL)) {
+            result.setUrl(contextURL);
+        }
+
+        if (!result.getMicroservice().equals(contextService)) {
+            result.setMicroservice(contextService);
+        }
     }
 
     /**
@@ -206,11 +230,7 @@ public class MappingServiceImpl implements MappingService {
             if (context == null) {
                 result.setTerminated(true);
             } else {
-                if (context.getURL() == null) {
-                    context.setURL(URL.fromServletRequest(context.getRequest()));
-                }
-
-                result.setMicroservice(context.getMicroservice());
+                mergeResultAfterInterceptor(result, context);
             }
         }
 
