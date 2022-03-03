@@ -7,11 +7,11 @@ import java.util.Objects;
  * TODO decide what fields to add to it
  */
 public class Microservice {
-
-    private String host;
-    private int port;
-    private String microserviceName;
-    private boolean healthStatus;
+    String microserviceName;
+    String host;
+    int port;
+    boolean healthStatus;
+    String microserviceID;
 
     public Microservice(String host, int port, String microserviceName, boolean healthStatus) {
         this.host = host;
@@ -22,22 +22,6 @@ public class Microservice {
 
     public Microservice() {
         this(null, 0, null, false);
-    }
-
-    /**
-     * gets the name of the microservice
-     * @return name of the microservice
-     */
-    public String getName(){
-        return microserviceName;
-    }
-
-    /**
-     * sets the health status of the microservice to specified health status
-     * @param healthStatus new health status of the microservice
-     */
-    public void setHealthStatus(boolean healthStatus){
-        this.healthStatus = healthStatus;
     }
 
     /**
@@ -81,11 +65,23 @@ public class Microservice {
     }
 
     /**
+     * sets the health status of the microservice to specified health status
+     * @param healthStatus new health status of the microservice
+     */
+    public void setHealthStatus(boolean healthStatus){
+        this.healthStatus = healthStatus;
+    }
+
+    /**
      * Get the name of the microservice
      * @return the microservice name
      */
     public String getMicroserviceName() {
         return microserviceName;
+    }
+
+    public String getMicroserviceID() {
+        return microserviceID;
     }
 
     /**
@@ -107,5 +103,9 @@ public class Microservice {
     @Override
     public int hashCode() {
         return Objects.hash(host, port, microserviceName, healthStatus);
+    }
+
+    public void setMicroserviceID(String microserviceID) {
+        this.microserviceID = microserviceID;
     }
 }
