@@ -18,7 +18,7 @@ public class DefaultMappingContext implements MappingContext {
     /**
      * The request the microservice is being mapped to
      */
-    private final HttpServletRequest request;
+    private HttpServletRequest request;
 
     /**
      * A response that an interceptor can set to return instead of forwarding the request
@@ -60,6 +60,16 @@ public class DefaultMappingContext implements MappingContext {
     @Override
     public HttpServletRequest getRequest() {
         return this.request;
+    }
+
+    /**
+     * Set the request object in the context
+     *
+     * @param request the request of the context
+     */
+    @Override
+    public void setRequest(HttpServletRequest request) {
+        this.request = request;
     }
 
     /**

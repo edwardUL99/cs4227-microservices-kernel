@@ -229,10 +229,8 @@ public class MappingServiceTest {
     @Test
     public void shouldMapRequestSuccessfully() {
         HttpServletRequest request = createMockRequest();
-        MappingResult expected = new MappingResult();
-        expected.setMicroservice(MICROSERVICE);
-        expected.setTerminated(false);
-        expected.setUrl(URL.fromParameters("http", "127.0.0.1", 1234, "buy", null));
+        MappingResult expected = new MappingResult(false, URL.fromParameters("http", "127.0.0.1", 1234, "buy", null),
+                MICROSERVICE, request, null);
 
         given(registry.getMicroservice(NAME))
                 .willReturn(MICROSERVICE);
@@ -256,10 +254,8 @@ public class MappingServiceTest {
         dispatcher.registerMappingInterceptor(interceptor, MappingDispatcher.RegistrationStrategy.BEFORE);
 
         HttpServletRequest request = createMockRequest();
-        MappingResult expected = new MappingResult();
-        expected.setMicroservice(MICROSERVICE);
-        expected.setTerminated(false);
-        expected.setUrl(URL.fromParameters("http", "127.0.0.1", 1234, "buy", null));
+        MappingResult expected = new MappingResult(false, URL.fromParameters("http", "127.0.0.1", 1234, "buy", null),
+                MICROSERVICE, request, null);
 
         MappingResult result = mappingService.mapRequest(request);
 

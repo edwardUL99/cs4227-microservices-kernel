@@ -5,6 +5,7 @@ import ie.ul.microservices.kernel.server.mapping.MappingResult;
 import ie.ul.microservices.kernel.server.models.Microservice;
 import ie.ul.microservices.kernel.server.registration.Registry;
 import ie.ul.microservices.kernel.server.services.MappingService;
+import ie.ul.microservices.kernel.server.services.RequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,6 @@ import java.util.Objects;
 
 /**
  * This controller takes all requests from the clients and then does some mapping and forwards the request
- * TODO decide how this will work
  */
 @RestController
 @RequestMapping(Constants.API_GATEWAY)
@@ -32,26 +32,31 @@ public class GatewayController {
      * The microservice registry
      */
     private final Registry registry;
+    /**
+     * The service for sending requests
+     */
+    private final RequestService requestService;
 
     /**
      * Create the GatewayController
      * @param mappingService the service used for mapping
      * @param registry the microservice registry
+     * @param requestService service for sending requests
      */
     @Autowired
-    public GatewayController(MappingService mappingService, Registry registry) {
+    public GatewayController(MappingService mappingService, Registry registry, RequestService requestService) {
         this.mappingService = mappingService;
         this.registry = registry;
+        this.requestService = requestService;
     }
 
     /**
      * The main entrypoint into the gateway. URL requests should be in the format /kernel-name/url
      * @param request the request being sent to the gateway
-     * @param response the response being sent back to the client
      * @return the response body
      */
     @RequestMapping("/**")
-    public ResponseEntity<?> gateway(HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<?> gateway(HttpServletRequest request) {
         MappingResult result = this.mappingService.mapRequest(request);
         ResponseEntity<?> resultResponse = result.getResponse();
 
@@ -60,7 +65,7 @@ public class GatewayController {
         else if (result.getMicroservice() == null)
             return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
 
-        return ResponseEntity.ok(result);
+        return requestService.sendRequest(result, request);
     }
 
     /**

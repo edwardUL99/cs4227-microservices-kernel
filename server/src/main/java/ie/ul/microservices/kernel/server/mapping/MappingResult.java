@@ -4,6 +4,7 @@ import ie.ul.microservices.kernel.server.models.Microservice;
 import ie.ul.microservices.kernel.server.models.URL;
 import org.springframework.http.ResponseEntity;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
 
 /**
@@ -23,6 +24,10 @@ public class MappingResult {
      */
     private Microservice microservice;
     /**
+     * The request after mapping
+     */
+    private HttpServletRequest request;
+    /**
      * The response entity from the context.
      */
     private ResponseEntity<?> response;
@@ -31,7 +36,7 @@ public class MappingResult {
      * Create a default MappingResult
      */
     public MappingResult() {
-        this(false, null, null, null);
+        this(false, null, null, null, null);
     }
 
     /**
@@ -40,10 +45,11 @@ public class MappingResult {
      * @param microservice the mapped microservice
      * @param response the response to set
      */
-    public MappingResult(boolean terminated, URL url, Microservice microservice, ResponseEntity<?> response) {
+    public MappingResult(boolean terminated, URL url, Microservice microservice, HttpServletRequest request, ResponseEntity<?> response) {
         this.terminated = terminated;
         this.url = url;
         this.microservice = microservice;
+        this.request = request;
         this.setResponse(response);
     }
 
@@ -96,6 +102,22 @@ public class MappingResult {
     }
 
     /**
+     * Get the request object after mapping
+     * @return request object after mapping
+     */
+    public HttpServletRequest getRequest() {
+        return request;
+    }
+
+    /**
+     * Set the request after mapping
+     * @param request new after mapping request
+     */
+    public void setRequest(HttpServletRequest request) {
+        this.request = request;
+    }
+
+    /**
      * Get the response set on the result
      * @return the response to set
      */
@@ -124,7 +146,8 @@ public class MappingResult {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         MappingResult result = (MappingResult) o;
-        return terminated == result.terminated && Objects.equals(url, result.url) && Objects.equals(microservice, result.microservice);
+        return terminated == result.terminated && Objects.equals(url, result.url) && Objects.equals(microservice, result.microservice)
+                && Objects.equals(request, result.request) && Objects.equals(response, result.response);
     }
 
     /**
@@ -133,6 +156,6 @@ public class MappingResult {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(terminated, url, microservice);
+        return Objects.hash(terminated, url, microservice, request, response);
     }
 }

@@ -216,6 +216,8 @@ public class MappingServiceImpl implements MappingService {
 
         if (response != null)
             result.setResponse(response);
+
+        result.setRequest(context.getRequest());
     }
 
     /**
@@ -229,10 +231,12 @@ public class MappingServiceImpl implements MappingService {
         if (context == null || context.terminated()) {
             // chain ended without terminating or context was terminated
             result.setTerminated(true);
-
-            if (context != null)
-                result.setResponse(context.getResponse());
+        } else {
+            result.setRequest(context.getRequest());
         }
+
+        if (context != null)
+            result.setResponse(context.getResponse());
 
         return context;
     }

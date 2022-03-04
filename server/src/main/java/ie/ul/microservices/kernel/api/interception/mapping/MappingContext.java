@@ -24,6 +24,12 @@ public interface MappingContext extends Context {
     HttpServletRequest getRequest();
 
     /**
+     * Set the request object in the context
+     * @param request the request of the context
+     */
+    void setRequest(HttpServletRequest request);
+
+    /**
      * Get the response object that will be sent back to the client. This is usually null, but can be set using {@link #setResponse(ResponseEntity)}
      * @return the response to send back.
      */
