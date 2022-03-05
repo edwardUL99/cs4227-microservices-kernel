@@ -19,7 +19,7 @@ public interface FrontController {
      * This endpoint is called by the kernel to request a health check on the microservice
      * @return the response entity containing the health response
      */
-    @GetMapping("/health")
+    @GetMapping("actuator/health")
     ResponseEntity<HealthResponse> health();
 
     /**

@@ -16,4 +16,10 @@
     API in the strictest sense where all the classes are interfaces implemented in a different module. Instead, it provides
     classes outlining the shape of registration requests, and also marker interfaces marking the front endpoints each microservice must implement
     </description>
+    <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+    </dependencies>
 </project>
