@@ -1,4 +1,4 @@
-package ie.ul.microservices.kernel.server.interception;
+package ie.ul.microservices.kernel.api.interception.mapping;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +11,10 @@ public abstract class SingleMappingInterceptor implements MappingInterceptor {
     /**
      * The strategy that was used to register the interceptor with
      */
-    protected final MappingDispatcher.RegistrationStrategy strategy;
+    protected MappingDispatcher.RegistrationStrategy strategy;
+
+    // Added to prevent the protected constructor being autowired by spring
+    private SingleMappingInterceptor() {}
 
     /**
      * Create and register the interceptor with the given strategy
@@ -26,17 +29,17 @@ public abstract class SingleMappingInterceptor implements MappingInterceptor {
         }
 
         this.strategy = strategy;
-        MappingDispatcher.getInstance().registerMappingInterceptor(this, strategy);
+        DispatcherContext.getDispatcher().registerMappingInterceptor(this, this.strategy);
     }
 
     /**
      * This interception point is called before the mapping takes place
      *
      * @param context the object holding information relating to mapping the request
-     * @param next    the next interceptor in the chain, this should be called for processing to continue
+     * @param chain    the next interceptor in the chain, this should be called for processing to continue
      */
     @Override
-    public void onBeforeMapping(MappingContext context, MappingInterceptorChain next) {
+    public void onBeforeMapping(MappingContext context, MappingInterceptorChain chain) {
         // no-op
     }
 
@@ -44,18 +47,10 @@ public abstract class SingleMappingInterceptor implements MappingInterceptor {
      * This interception point is called after the mapping takes place
      *
      * @param context the object holding information relating to mapping the request
-     * @param next    the next interceptor in the chain, this should be called for processing to continue
+     * @param chain    the next interceptor in the chain, this should be called for processing to continue
      */
     @Override
-    public void onAfterMapping(MappingContext context, MappingInterceptorChain next) {
+    public void onAfterMapping(MappingContext context, MappingInterceptorChain chain) {
         // no-op
-    }
-
-    /**
-     * Get the strategy used to register the interceptor
-     * @return the strategy used registering the interceptor
-     */
-    public MappingDispatcher.RegistrationStrategy getStrategy() {
-        return strategy;
     }
 }

@@ -1,34 +1,38 @@
 package ie.ul.microservices.kernel.server.models;
 
+import java.util.Objects;
+
 /**
  * This class represents a Microservice instance that has been registered on the kernel
  * TODO decide what fields to add to it
  */
 public class Microservice {
-
     String microserviceName;
     String host;
     int port;
     boolean healthStatus;
     String microserviceID;
 
-    /**
-     * Get the name of the microservice
-     * @return the microservice name
-     */
-    public String getMicroserviceName() {
-        return microserviceName;
-    }
-
-    /**
-     * Set the microservice name
-     * @param microserviceName the name of the microservice
-     */
-    public void setMicroserviceName(String microserviceName) {
+    public Microservice(String host, int port, String microserviceName, boolean healthStatus) {
+        this.host = host;
+        this.port = port;
         this.microserviceName = microserviceName;
+        this.healthStatus = healthStatus;
     }
 
-     /**
+    public Microservice() {
+        this(null, 0, null, false);
+    }
+
+    /**
+     * gets the health status of the microservice
+     * @return health status of the microservice
+     */
+    public boolean isHealthy(){
+        return healthStatus;
+    }
+
+    /**
      * Get the hostname of the microservice
      * @return the microservice hostname
      */
@@ -61,14 +65,6 @@ public class Microservice {
     }
 
     /**
-     * gets the health status of the microservice
-     * @return health status of the microservice
-     */
-    public boolean isHealthy(){
-        return healthStatus;
-    }
-
-    /**
      * sets the health status of the microservice to specified health status
      * @param healthStatus new health status of the microservice
      */
@@ -80,6 +76,10 @@ public class Microservice {
      * Get the name of the microservice
      * @return the microservice name
      */
+    public String getMicroserviceName() {
+        return microserviceName;
+    }
+
     public String getMicroserviceID() {
         return microserviceID;
     }
@@ -88,6 +88,23 @@ public class Microservice {
      * Set the microservice name
      * @param microserviceName the name of the microservice
      */
+    public void setMicroserviceName(String microserviceName) {
+        this.microserviceName = microserviceName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Microservice that = (Microservice) o;
+        return port == that.port && healthStatus == that.healthStatus && Objects.equals(host, that.host) && Objects.equals(microserviceName, that.microserviceName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(host, port, microserviceName, healthStatus);
+    }
+
     public void setMicroserviceID(String microserviceID) {
         this.microserviceID = microserviceID;
     }
