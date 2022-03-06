@@ -1,27 +1,31 @@
 package ie.ul.microservices.kernel.server.models;
 
-import ie.ul.microservices.kernel.api.client.ForwardedRequest;
 import ie.ul.microservices.kernel.api.client.FrontController;
 import ie.ul.microservices.kernel.api.client.HealthResponse;
-import org.springframework.boot.actuate.health.Health;
+import ie.ul.microservices.kernel.server.monitoring.HealthReporter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 /**
  * This class represents a Microservice instance that has been registered on the kernel
  * TODO decide what fields to add to it
  */
 public class Microservice implements FrontController{
-
     String microserviceName;
     String host;
     int port;
+    HealthReporter healthReporter;
     boolean healthStatus;
     String microserviceID;
+
+    /**
+     * When each microservice is created a new object of which class
+     * implements HealthReporter is created.
+     * e.g. Microservice dbMicroservice = new Microservice(DBHealthReporter)
+     */
+    public Microservice(HealthReporter healthReporter) {
+        this.healthReporter = healthReporter;
+    }
 
     /**
      * Get the name of the microservice
@@ -96,8 +100,8 @@ public class Microservice implements FrontController{
     }
 
     /**
-     * Set the microservice name
-     * @param microserviceName the name of the microservice
+     * Set the microserviceID
+     * @param microserviceID the ID of the microservice
      */
     public void setMicroserviceID(String microserviceID) {
         this.microserviceID = microserviceID;
@@ -105,29 +109,18 @@ public class Microservice implements FrontController{
 
     @Override
     public ResponseEntity<HealthResponse> health() {
-        int responseCode = 0;
-        try {
-            URL url = new URL("/health");
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-            conn.setRequestProperty("Accept", "application/json");
-            conn.connect();
-            responseCode = conn.getResponseCode();
-        } catch (IOException e) {
-            e.printStackTrace();
+        HttpStatus httpStatus;
+        boolean isHealthy = healthReporter.isHealthy();
+
+        if(isHealthy) {
+            httpStatus = HttpStatus.OK;
+        } else {
+            httpStatus = HttpStatus.NOT_ACCEPTABLE;
         }
 
-        HealthResponse healthResponse = HealthResponse.builder()
-                .microserviceName(microserviceName)
-                .microserviceID(microserviceID)
-                .build();
-
-        return ResponseEntity(healthResponse, HttpStatus.OK);
-    }
-
-    @Override
-    public ResponseEntity<?> lookup() {
-        return null;
+        HealthResponse healthResponse = new HealthResponse(getMicroserviceName(), getMicroserviceID(), httpStatus);
+        //create ResponseEntity with body and status code
+        return new ResponseEntity<>(healthResponse, httpStatus);
     }
 
     @Override
@@ -135,8 +128,4 @@ public class Microservice implements FrontController{
         return null;
     }
 
-    @Override
-    public ResponseEntity<?> forward(ForwardedRequest request) {
-        return null;
-    }
 }
