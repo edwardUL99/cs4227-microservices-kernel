@@ -1,5 +1,10 @@
 package ie.ul.microservices.kernel.server.monitoring;
 
+import ie.ul.microservices.kernel.server.models.Microservice;
+import ie.ul.microservices.kernel.server.registration.RegistryImpl;
+
+import java.util.List;
+
 /**
  * This interface represents an object that can monitor the registered microservices and update their statuses. Can be done
  * in real-time by making the implementation use threads, or it can be implemented in the same thread as the server and be scheduled

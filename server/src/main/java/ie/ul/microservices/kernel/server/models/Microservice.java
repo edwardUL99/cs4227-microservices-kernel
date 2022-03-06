@@ -1,27 +1,36 @@
 package ie.ul.microservices.kernel.server.models;
 
+import ie.ul.microservices.kernel.api.client.FrontController;
+import ie.ul.microservices.kernel.api.client.HealthResponse;
+import ie.ul.microservices.kernel.server.monitoring.HealthReporter;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
 import java.util.Objects;
 
 /**
  * This class represents a Microservice instance that has been registered on the kernel
  * TODO decide what fields to add to it
  */
-public class Microservice {
+
+public class Microservice implements FrontController{
     String microserviceName;
     String host;
     int port;
+    HealthReporter healthReporter;    
     boolean healthStatus;
     String microserviceID;
 
-    public Microservice(String host, int port, String microserviceName, boolean healthStatus) {
+    public Microservice(String host, int port, String microserviceName, boolean healthStatus, HealthReporter healthReporter) {
         this.host = host;
         this.port = port;
         this.microserviceName = microserviceName;
         this.healthStatus = healthStatus;
+        this.healthReporter = healthReporter;
     }
 
     public Microservice() {
-        this(null, 0, null, false);
+        this(null, 0, null, false, null);
     }
 
     /**
@@ -85,8 +94,8 @@ public class Microservice {
     }
 
     /**
-     * Set the microservice name
-     * @param microserviceName the name of the microservice
+     * Set the microserviceID
+     * @param microserviceID the ID of the microservice
      */
     public void setMicroserviceName(String microserviceName) {
         this.microserviceName = microserviceName;
@@ -108,4 +117,26 @@ public class Microservice {
     public void setMicroserviceID(String microserviceID) {
         this.microserviceID = microserviceID;
     }
+
+    @Override
+    public ResponseEntity<HealthResponse> health() {
+        HttpStatus httpStatus;
+        boolean isHealthy = healthReporter.isHealthy();
+
+        if(isHealthy) {
+            httpStatus = HttpStatus.OK;
+        } else {
+            httpStatus = HttpStatus.NOT_ACCEPTABLE;
+        }
+
+        HealthResponse healthResponse = new HealthResponse(getMicroserviceName(), getMicroserviceID(), httpStatus);
+        //create ResponseEntity with body and status code
+        return new ResponseEntity<>(healthResponse, httpStatus);
+    }
+
+    @Override
+    public ResponseEntity<?> shutdown() {
+        return null;
+    }
+
 }
