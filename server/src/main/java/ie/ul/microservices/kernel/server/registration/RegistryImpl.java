@@ -7,12 +7,18 @@ import java.util.Map;
 import java.util.UUID;
 
 import ie.ul.microservices.kernel.server.models.Microservice;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
+@Service
+@Scope("singleton")
 public class RegistryImpl implements Registry {
 
     /**
      * A map that use the name of the microservice as the key
-     * and the microservice instance with the specfied name as the value
+     * and the map of microservice IDs pointing to the microservice instance with the specified name as the value
      */
     private final Map<String, Map<String, Microservice>> microservices = new HashMap<>();
 
@@ -62,6 +68,17 @@ public class RegistryImpl implements Registry {
         }
     }
 
+    @Override
+    public void handleUnhealthyMicroservices(List<Microservice> unHealthyMicroservices){
+        for(Microservice ms : unHealthyMicroservices) {
+            //console output
+            System.out.println("Unhealthy microservice " + ms.getMicroserviceName() + " with ID "
+                    + ms.getMicroserviceID() + " removed from registry\n");
+            unregisterMicroservice(ms);
+        }
+        System.out.println(getMicroservices().size() + " active microservices\n");
+    }
+
     /**
      * unregisters the given microservice from the registry
      * @params the microservice to unregistered
@@ -69,7 +86,7 @@ public class RegistryImpl implements Registry {
     @Override
     public void unregisterMicroservice(Microservice microservice) {
         microservices.get(microservice.getMicroserviceName()).remove(microservice.getMicroserviceID());
-        
+
     }
 
     /**
