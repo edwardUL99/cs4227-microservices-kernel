@@ -6,44 +6,42 @@ import ie.ul.microservices.kernel.server.monitoring.HealthReporter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Objects;
+
 /**
  * This class represents a Microservice instance that has been registered on the kernel
  * TODO decide what fields to add to it
  */
+
 public class Microservice implements FrontController{
     String microserviceName;
     String host;
     int port;
-    HealthReporter healthReporter;
+    HealthReporter healthReporter;    
     boolean healthStatus;
     String microserviceID;
 
-    /**
-     * When each microservice is created a new object of which class
-     * implements HealthReporter is created.
-     * e.g. Microservice dbMicroservice = new Microservice(DBHealthReporter)
-     */
-    public Microservice(HealthReporter healthReporter) {
+    public Microservice(String host, int port, String microserviceName, boolean healthStatus, HealthReporter healthReporter) {
+        this.host = host;
+        this.port = port;
+        this.microserviceName = microserviceName;
+        this.healthStatus = healthStatus;
         this.healthReporter = healthReporter;
     }
 
-    /**
-     * Get the name of the microservice
-     * @return the microservice name
-     */
-    public String getMicroserviceName() {
-        return microserviceName;
+    public Microservice() {
+        this(null, 0, null, false, null);
     }
 
     /**
-     * Set the microservice name
-     * @param microserviceName the name of the microservice
+     * gets the health status of the microservice
+     * @return health status of the microservice
      */
-    public void setMicroserviceName(String microserviceName) {
-        this.microserviceName = microserviceName;
+    public boolean isHealthy(){
+        return healthStatus;
     }
 
-     /**
+    /**
      * Get the hostname of the microservice
      * @return the microservice hostname
      */
@@ -76,14 +74,6 @@ public class Microservice implements FrontController{
     }
 
     /**
-     * gets the health status of the microservice
-     * @return health status of the microservice
-     */
-    public boolean isHealthy(){
-        return healthStatus;
-    }
-
-    /**
      * sets the health status of the microservice to specified health status
      * @param healthStatus new health status of the microservice
      */
@@ -95,6 +85,10 @@ public class Microservice implements FrontController{
      * Get the name of the microservice
      * @return the microservice name
      */
+    public String getMicroserviceName() {
+        return microserviceName;
+    }
+
     public String getMicroserviceID() {
         return microserviceID;
     }
@@ -103,6 +97,23 @@ public class Microservice implements FrontController{
      * Set the microserviceID
      * @param microserviceID the ID of the microservice
      */
+    public void setMicroserviceName(String microserviceName) {
+        this.microserviceName = microserviceName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Microservice that = (Microservice) o;
+        return port == that.port && healthStatus == that.healthStatus && Objects.equals(host, that.host) && Objects.equals(microserviceName, that.microserviceName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(host, port, microserviceName, healthStatus);
+    }
+
     public void setMicroserviceID(String microserviceID) {
         this.microserviceID = microserviceID;
     }

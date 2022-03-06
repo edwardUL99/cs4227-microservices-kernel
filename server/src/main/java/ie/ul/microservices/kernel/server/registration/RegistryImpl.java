@@ -18,7 +18,7 @@ public class RegistryImpl implements Registry {
 
     /**
      * A map that use the name of the microservice as the key
-     * and the microservice instance with the specfied name as the value
+     * and the map of microservice IDs pointing to the microservice instance with the specified name as the value
      */
     private final Map<String, Map<String, Microservice>> microservices = new HashMap<>();
 
