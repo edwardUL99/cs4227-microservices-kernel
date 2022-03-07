@@ -26,10 +26,36 @@ public class MonitorImpl implements Monitor {
     }
 
     /**
-     * The list of microservices passed to this function should be
-     * the list of microservices held in the registry but for testing
-     * purposes it is a list in a test class.
+     * Test method
      */
+    public void startMonitoringTest(List<Microservice> microservices) {
+        List<Microservice> unhealthyMicroservices = new ArrayList<>();
+        Gson gson = new Gson();
+
+        if(isMonitoring.get()) {
+            for(Microservice ms : microservices){
+                ResponseEntity<HealthResponse> response = ms.health();
+                boolean healthStatus = response.getStatusCode().is2xxSuccessful();
+                ms.setHealthStatus(healthStatus);
+
+                //console output
+                String responseJson = gson.toJson(response);
+                System.out.println(responseJson);
+                System.out.println("healthStatus of " + ms.getMicroserviceName() + " set to " + healthStatus);
+
+                //if the microservice is unhealthy add it to the list unhealthyMicroservices
+                if(!healthStatus) {
+                    unhealthyMicroservices.add(ms);
+                    System.out.println(ms.getMicroserviceName() + " added to unhealthyMicroservices\n");
+                }
+
+                System.out.println();
+            }
+
+            //pass unhealthyMicroservices to registry to be deregistered and shutdown
+            registry.handleUnhealthyMicroservices(unhealthyMicroservices);
+        }
+    }
 
     @Scheduled(fixedDelay = 5000)
     @Autowired
@@ -47,16 +73,19 @@ public class MonitorImpl implements Monitor {
                 boolean healthStatus = response.getStatusCode().is2xxSuccessful();
                 ms.setHealthStatus(healthStatus);
 
-                //if the microservice is unhealthy add it to the list unhealthyMicroservices
-                if(!healthStatus) {
-                    unhealthyMicroservices.add(ms);
-                }
-
                 //console output
                 String responseJson = gson.toJson(response);
                 System.out.println(responseJson + "\n");
+                System.out.println("healthStatus of " + ms.getMicroserviceName() + " set to " + healthStatus);
+
+                //if the microservice is unhealthy add it to the list unhealthyMicroservices
+                if(!healthStatus) {
+                    unhealthyMicroservices.add(ms);
+                    System.out.println(ms.getMicroserviceName() + " added to unhealthyMicroservices");
+                }
             }
 
+            //pass unhealthyMicroservices to registry to be deregistered and shutdown
             registry.handleUnhealthyMicroservices(unhealthyMicroservices);
         }
     }

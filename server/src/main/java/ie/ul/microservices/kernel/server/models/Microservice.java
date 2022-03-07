@@ -2,7 +2,6 @@ package ie.ul.microservices.kernel.server.models;
 
 import ie.ul.microservices.kernel.api.client.FrontController;
 import ie.ul.microservices.kernel.api.client.HealthResponse;
-import ie.ul.microservices.kernel.server.monitoring.HealthReporter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -17,20 +16,18 @@ public class Microservice implements FrontController{
     String microserviceName;
     String host;
     int port;
-    HealthReporter healthReporter;    
     boolean healthStatus;
     String microserviceID;
 
-    public Microservice(String host, int port, String microserviceName, boolean healthStatus, HealthReporter healthReporter) {
+    public Microservice(String host, int port, String microserviceName, boolean healthStatus) {
         this.host = host;
         this.port = port;
         this.microserviceName = microserviceName;
         this.healthStatus = healthStatus;
-        this.healthReporter = healthReporter;
     }
 
     public Microservice() {
-        this(null, 0, null, false, null);
+        this(null, 0, null, false);
     }
 
     /**
@@ -74,14 +71,6 @@ public class Microservice implements FrontController{
     }
 
     /**
-     * sets the health status of the microservice to specified health status
-     * @param healthStatus new health status of the microservice
-     */
-    public void setHealthStatus(boolean healthStatus){
-        this.healthStatus = healthStatus;
-    }
-
-    /**
      * Get the name of the microservice
      * @return the microservice name
      */
@@ -89,14 +78,14 @@ public class Microservice implements FrontController{
         return microserviceName;
     }
 
+    /**
+     * Set the microserviceID
+     * @return microserviceID the ID of the microservice
+     */
     public String getMicroserviceID() {
         return microserviceID;
     }
 
-    /**
-     * Set the microserviceID
-     * @param microserviceID the ID of the microservice
-     */
     public void setMicroserviceName(String microserviceName) {
         this.microserviceName = microserviceName;
     }
@@ -120,18 +109,16 @@ public class Microservice implements FrontController{
 
     @Override
     public ResponseEntity<HealthResponse> health() {
-        HttpStatus httpStatus;
-        boolean isHealthy = healthReporter.isHealthy();
+        HealthResponse healthResponse = new HealthResponse(getMicroserviceName(),getMicroserviceID());
+        return new ResponseEntity<>(healthResponse, HttpStatus.OK);
+    }
 
-        if(isHealthy) {
-            httpStatus = HttpStatus.OK;
-        } else {
-            httpStatus = HttpStatus.NOT_ACCEPTABLE;
-        }
-
-        HealthResponse healthResponse = new HealthResponse(getMicroserviceName(), getMicroserviceID(), httpStatus);
-        //create ResponseEntity with body and status code
-        return new ResponseEntity<>(healthResponse, httpStatus);
+    /**
+     * sets the health status of the microservice to specified health status
+     * @param healthStatus new health status of the microservice
+     */
+    public void setHealthStatus(boolean healthStatus){
+        this.healthStatus = healthStatus;
     }
 
     @Override
