@@ -1,4 +1,4 @@
-package ie.ul.microservices.kernel.server.authentication;
+package ie.ul.microservices.kernel.server.authentication.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

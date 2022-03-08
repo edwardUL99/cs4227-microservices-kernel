@@ -1,5 +1,10 @@
-package ie.ul.microservices.kernel.server.authentication;
+package ie.ul.microservices.kernel.server.authentication.services;
 
+import ie.ul.microservices.kernel.server.authentication.AccountExistsException;
+import ie.ul.microservices.kernel.server.authentication.JWT;
+import ie.ul.microservices.kernel.server.authentication.Token;
+import ie.ul.microservices.kernel.server.authentication.models.Account;
+import ie.ul.microservices.kernel.server.authentication.repositories.AccountRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 

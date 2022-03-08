@@ -1,4 +1,4 @@
-package ie.ul.microservices.kernel.server.authentication;
+package ie.ul.microservices.kernel.server.authentication.models;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

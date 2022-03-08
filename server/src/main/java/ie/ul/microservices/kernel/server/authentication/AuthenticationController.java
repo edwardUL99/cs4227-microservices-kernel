@@ -1,6 +1,9 @@
 package ie.ul.microservices.kernel.server.authentication;
 
 import ie.ul.microservices.kernel.server.Constants;
+import ie.ul.microservices.kernel.server.authentication.models.Account;
+import ie.ul.microservices.kernel.server.authentication.models.AuthenticationRequest;
+import ie.ul.microservices.kernel.server.authentication.services.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

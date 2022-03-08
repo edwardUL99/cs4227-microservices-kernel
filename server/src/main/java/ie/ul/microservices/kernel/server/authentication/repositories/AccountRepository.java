@@ -1,5 +1,6 @@
-package ie.ul.microservices.kernel.server.authentication;
+package ie.ul.microservices.kernel.server.authentication.repositories;
 
+import ie.ul.microservices.kernel.server.authentication.models.Account;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;

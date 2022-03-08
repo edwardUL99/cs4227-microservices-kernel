@@ -1,5 +1,6 @@
 package ie.ul.microservices.kernel.server.authentication;
 
+import ie.ul.microservices.kernel.server.authentication.models.Account;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;

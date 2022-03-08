@@ -1,4 +1,8 @@
-package ie.ul.microservices.kernel.server.authentication;
+package ie.ul.microservices.kernel.server.authentication.services;
+
+import ie.ul.microservices.kernel.server.authentication.AccountExistsException;
+import ie.ul.microservices.kernel.server.authentication.Token;
+import ie.ul.microservices.kernel.server.authentication.models.Account;
 
 /**
  * This interface represents a service for use authentication
