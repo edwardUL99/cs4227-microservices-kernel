@@ -30,5 +30,5 @@ public interface RegistrationController {
      * @param request the register to remove the microservice from the kernel
      * @return the response after the microservice was unregistered
      */
-    ResponseEntity<UnregisterResponse> unregister(@RequestBody @Valid UnregisterRequest request);
+    ResponseEntity<UnregistrationResponse> unregister(@RequestBody @Valid UnregistrationRequest request);
 }

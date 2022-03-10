@@ -5,5 +5,25 @@ package ie.ul.microservices.kernel.api.server;
  * TODO decide what parameters are needed
  */
 public class RegistrationRequest {
-    //ref to microservice that wants to register
+    String name;
+    String host;
+    int port;
+
+    public RegistrationRequest(String name, String host, int port){
+        this.name = name;
+        this.host = host;
+        this.port = port;
+    }
+
+    public String getName(){
+        return this.name;
+    }
+
+    public String getHost(){
+        return this.host;
+    }
+
+    public int getPort(){
+        return this.port;
+    }
 }
