@@ -28,6 +28,8 @@ public interface Registry {
      */
     void registerMicroservice(Microservice microservice);
 
+    String registerMicroservice(String name, String host, int port);
+
     /**
      * Each time the microservice registry is checked for
      * unhealthy services this function is called to

@@ -6,6 +6,7 @@ import ie.ul.microservices.kernel.api.interception.mapping.MappingInterceptorCha
 import ie.ul.microservices.kernel.api.interception.mapping.SingleMappingInterceptor;
 import ie.ul.microservices.kernel.server.authentication.models.Account;
 import ie.ul.microservices.kernel.server.authentication.repositories.AccountRepository;
+import io.jsonwebtoken.JwtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,7 +80,7 @@ public class AuthenticationInterceptor extends SingleMappingInterceptor {
 
                     return account != null;
                 }
-            } catch (JWTExpiredException ex) {
+            } catch (JWTExpiredException | JwtException ex) {
                 ex.printStackTrace();
             }
         }

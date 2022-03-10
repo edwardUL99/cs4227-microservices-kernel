@@ -3,8 +3,11 @@ package ie.ul.microservices.kernel.server.controllers;
 import ie.ul.microservices.kernel.api.server.RegistrationController;
 import ie.ul.microservices.kernel.api.server.RegistrationRequest;
 import ie.ul.microservices.kernel.api.server.RegistrationResponse;
-import ie.ul.microservices.kernel.api.server.UnregisterRequest;
-import ie.ul.microservices.kernel.api.server.UnregisterResponse;
+import ie.ul.microservices.kernel.api.server.UnregistrationRequest;
+import ie.ul.microservices.kernel.api.server.UnregistrationResponse;
+import ie.ul.microservices.kernel.server.registration.Registry;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,6 +18,12 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public class RegistrationControllerImpl implements RegistrationController {
+
+    private final Registry registry;
+
+    public RegistrationControllerImpl(Registry registry){
+        this.registry = registry;
+    }
     /**
      * Register the microservice with the kernel through the defined registration request object.
      *
@@ -23,7 +32,14 @@ public class RegistrationControllerImpl implements RegistrationController {
      */
     @Override
     public ResponseEntity<RegistrationResponse> register(RegistrationRequest request) {
-        return null;
+        HttpStatus httpStatus = HttpStatus.OK;
+        String id = registry.registerMicroservice(request.getName(), request.getHost(), request.getPort());
+        if(id == null) {
+            httpStatus = HttpStatus.NOT_ACCEPTABLE;
+        }
+
+        RegistrationResponse registrationResponse = new RegistrationResponse(id);
+        return new ResponseEntity<>(registrationResponse, httpStatus);
     }
 
     /**
@@ -36,7 +52,14 @@ public class RegistrationControllerImpl implements RegistrationController {
      * @return the response after the microservice was unregistered
      */
     @Override
-    public ResponseEntity<UnregisterResponse> unregister(UnregisterRequest request) {
-        return null;
+    public ResponseEntity<UnregistrationResponse> unregister(UnregistrationRequest request) {
+        HttpStatus httpStatus = HttpStatus.OK;
+
+        if(true) {
+            httpStatus = HttpStatus.NOT_ACCEPTABLE;
+        }
+
+        UnregistrationResponse unregistrationResponse = new UnregistrationResponse();
+        return new ResponseEntity<>(unregistrationResponse, httpStatus);
     }
 }
