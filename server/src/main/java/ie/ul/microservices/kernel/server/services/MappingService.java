@@ -1,9 +1,8 @@
 package ie.ul.microservices.kernel.server.services;
 
+import ie.ul.microservices.kernel.api.requests.APIRequest;
 import ie.ul.microservices.kernel.server.mapping.MappingException;
 import ie.ul.microservices.kernel.server.mapping.MappingResult;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * This interface represents a service for mapping requests. It is also responsible for dispatching to interceptors
@@ -17,5 +16,5 @@ public interface MappingService {
      * and an appropriate response saying the request cannot be handled should be returned
      * @throws MappingException if an error occurs during mapping.
      */
-    MappingResult mapRequest(HttpServletRequest request) throws MappingException;
+    MappingResult mapRequest(APIRequest request) throws MappingException;
 }

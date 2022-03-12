@@ -1,5 +1,6 @@
 package ie.ul.microservices.kernel.server.services;
 
+import ie.ul.microservices.kernel.api.requests.APIRequest;
 import ie.ul.microservices.kernel.api.requests.Request;
 import ie.ul.microservices.kernel.api.requests.RequestBuilder;
 import ie.ul.microservices.kernel.api.requests.RequestException;
@@ -8,18 +9,12 @@ import ie.ul.microservices.kernel.server.mapping.MappingResult;
 import ie.ul.microservices.kernel.server.models.Microservice;
 import ie.ul.microservices.kernel.server.registration.Registry;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.Enumeration;
-import java.util.stream.Collectors;
 
 /**
  * This class represents the default implementation for the request service
@@ -84,16 +79,20 @@ public class RequestServiceImpl implements RequestService {
      * @return the response of the request
      */
     @Override
-    public ResponseEntity<?> sendRequest(MappingResult result, HttpServletRequest request) {
-        HttpMethod method = HttpMethod.valueOf(request.getMethod());
+    public ResponseEntity<?> sendRequest(MappingResult result, APIRequest request) {
+        try {
+            Request req = new RequestBuilder()
+                    .withBody(request.getJSONBody())
+                    .withHeaders(request.getHeaders())
+                    .withUrl(result.getUrl().toString())
+                    .withMethod(request.getMethod())
+                    .build();
 
-        Request req = new RequestBuilder()
-                .withBodyFromRequest(request)
-                .withHeadersFromRequest(request)
-                .withUrl(result.getUrl().toString())
-                .withMethod(method)
-                .build();
+            return sendAndProcessResponse(result.getMicroservice(), req);
+        } catch (IOException ex) {
+            ex.printStackTrace();
 
-        return sendAndProcessResponse(result.getMicroservice(), req);
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
+        }
     }
 }

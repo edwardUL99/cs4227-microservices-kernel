@@ -1,8 +1,12 @@
 package ie.ul.microservices.kernel.server;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * This class holds constants and utility functions
@@ -60,5 +64,16 @@ public class Constants {
         newBody = (newBody.isEmpty()) ? "/":newBody;
 
         return newBody;
+    }
+
+    /**
+     * Parse the body if the body is null
+     * @return the parsed body
+     * @throws IOException if an exception occurs
+     */
+    public static Object parseBody(HttpServletRequest request) throws IOException {
+        BufferedReader reader = request.getReader();
+
+        return (reader.ready()) ? reader.lines().collect(Collectors.joining(System.lineSeparator())):null;
     }
 }
