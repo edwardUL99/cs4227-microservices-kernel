@@ -201,17 +201,14 @@ public class MappingServiceImpl implements MappingService {
         Microservice resultService = result.getMicroservice();
         URL contextURL = context.getURL();
 
-        if (contextURL == null || contextService == null) {
+        if (contextURL == null || contextService == null)
             context.setURL(URL.fromMicroserviceRequest(context.getRequest().getWrappedRequest()));
-        }
 
-        if (!result.getUrl().equals(contextURL)) {
+        if (!result.getUrl().equals(contextURL))
             result.setUrl(contextURL);
-        }
 
-        if (contextService != null && !contextService.equals(resultService)) {
+        if (contextService != null && !contextService.equals(resultService))
             result.setMicroservice(contextService);
-        }
 
         ResponseEntity<?> response = context.getResponse();
 

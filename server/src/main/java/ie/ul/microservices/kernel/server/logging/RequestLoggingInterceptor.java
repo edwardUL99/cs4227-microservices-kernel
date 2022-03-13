@@ -3,8 +3,9 @@ package ie.ul.microservices.kernel.server.logging;
 import ie.ul.microservices.kernel.api.interception.mapping.AllMappingInterceptor;
 import ie.ul.microservices.kernel.api.interception.mapping.MappingContext;
 import ie.ul.microservices.kernel.api.interception.mapping.MappingInterceptorChain;
-import ie.ul.microservices.kernel.server.models.Microservice;
 import ie.ul.microservices.kernel.api.requests.URL;
+import ie.ul.microservices.kernel.server.models.Microservice;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.DependsOn;
