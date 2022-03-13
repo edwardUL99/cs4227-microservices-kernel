@@ -1,4 +1,4 @@
-package ie.ul.microservices.kernel.server.models;
+package ie.ul.microservices.kernel.api.requests;
 
 import ie.ul.microservices.kernel.server.Constants;
 
@@ -194,6 +194,16 @@ public class URL {
      * @return the created URL
      */
     public static URL fromServletRequest(HttpServletRequest request) {
+        return fromParameters(request.getScheme(), request.getLocalName(), request.getLocalPort(),
+                request.getRequestURI(), request.getQueryString());
+    }
+
+    /**
+     * Similar to the fromServletRequest method but removes the gateway URL from the URI
+     * @param request the request to parse the URL from
+     * @return the created URL
+     */
+    public static URL fromMicroserviceRequest(HttpServletRequest request) {
         return fromParameters(request.getScheme(), request.getLocalName(), request.getLocalPort(),
                 Constants.removeGatewayURL(request.getRequestURI()), request.getQueryString());
     }

@@ -7,9 +7,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import ie.ul.microservices.kernel.server.models.Microservice;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 @Service

@@ -1,11 +1,10 @@
 package ie.ul.microservices.kernel.server.interception.mapping;
 
 import ie.ul.microservices.kernel.api.interception.mapping.MappingContext;
+import ie.ul.microservices.kernel.api.requests.APIRequest;
 import ie.ul.microservices.kernel.server.models.Microservice;
-import ie.ul.microservices.kernel.server.models.URL;
+import ie.ul.microservices.kernel.api.requests.URL;
 import org.springframework.http.ResponseEntity;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * This class represents the default implementation of the MappingContext
@@ -18,7 +17,7 @@ public class DefaultMappingContext implements MappingContext {
     /**
      * The request the microservice is being mapped to
      */
-    private HttpServletRequest request;
+    private APIRequest request;
 
     /**
      * A response that an interceptor can set to return instead of forwarding the request
@@ -37,9 +36,9 @@ public class DefaultMappingContext implements MappingContext {
     /**
      * Creates a default empty context
      */
-    public DefaultMappingContext(HttpServletRequest request) {
+    public DefaultMappingContext(APIRequest request) {
         this(null, request);
-        this.url = URL.fromServletRequest(request);
+        this.url = request.getRequestURL();
     }
 
     /**
@@ -47,7 +46,7 @@ public class DefaultMappingContext implements MappingContext {
      * @param microservice the mapped microservice
      * @param request the request received
      */
-    public DefaultMappingContext(Microservice microservice, HttpServletRequest request) {
+    public DefaultMappingContext(Microservice microservice, APIRequest request) {
         this.microservice = microservice;
         this.request = request;
     }
@@ -58,7 +57,7 @@ public class DefaultMappingContext implements MappingContext {
      * @return the request being mapped
      */
     @Override
-    public HttpServletRequest getRequest() {
+    public APIRequest getRequest() {
         return this.request;
     }
 
@@ -68,7 +67,7 @@ public class DefaultMappingContext implements MappingContext {
      * @param request the request of the context
      */
     @Override
-    public void setRequest(HttpServletRequest request) {
+    public void setRequest(APIRequest request) {
         this.request = request;
     }
 

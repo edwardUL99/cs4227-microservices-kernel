@@ -1,5 +1,7 @@
 package ie.ul.microservices.kernel.server.controllers;
 
+import ie.ul.microservices.kernel.api.requests.APIRequest;
+import ie.ul.microservices.kernel.api.requests.APIRequestFactory;
 import ie.ul.microservices.kernel.server.Constants;
 import ie.ul.microservices.kernel.server.mapping.MappingResult;
 import ie.ul.microservices.kernel.server.models.Microservice;
@@ -15,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.Objects;
 
 /**
@@ -51,21 +52,36 @@ public class GatewayController {
     }
 
     /**
+     * Dispatch the request to the microservice
+     * @param request the request to dispatch
+     * @return the response body
+     */
+    private ResponseEntity<?> dispatch(HttpServletRequest request) {
+        try {
+            APIRequest apiRequest = APIRequestFactory.createRequestForContentType(request);
+            MappingResult result = this.mappingService.mapRequest(apiRequest);
+            ResponseEntity<?> resultResponse = result.getResponse();
+
+            if (result.isTerminated())
+                return Objects.requireNonNullElseGet(resultResponse, () -> ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build());
+            else if (result.getMicroservice() == null)
+                return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
+
+            return requestService.sendRequest(result, result.getRequest());
+        } catch (IllegalArgumentException ex) {
+            ex.printStackTrace();
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    /**
      * The main entrypoint into the gateway. URL requests should be in the format /kernel-name/url
      * @param request the request being sent to the gateway
      * @return the response body
      */
     @RequestMapping("/**")
     public ResponseEntity<?> gateway(HttpServletRequest request) {
-        MappingResult result = this.mappingService.mapRequest(request);
-        ResponseEntity<?> resultResponse = result.getResponse();
-
-        if (result.isTerminated())
-            return Objects.requireNonNullElseGet(resultResponse, () -> ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build());
-        else if (result.getMicroservice() == null)
-            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
-
-        return requestService.sendRequest(result, request);
+        return dispatch(request);
     }
 
     /**

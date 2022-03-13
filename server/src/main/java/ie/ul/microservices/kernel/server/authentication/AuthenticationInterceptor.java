@@ -4,6 +4,7 @@ import ie.ul.microservices.kernel.api.interception.mapping.MappingContext;
 import ie.ul.microservices.kernel.api.interception.mapping.MappingDispatcher;
 import ie.ul.microservices.kernel.api.interception.mapping.MappingInterceptorChain;
 import ie.ul.microservices.kernel.api.interception.mapping.SingleMappingInterceptor;
+import ie.ul.microservices.kernel.api.requests.APIRequest;
 import ie.ul.microservices.kernel.server.authentication.models.Account;
 import ie.ul.microservices.kernel.server.authentication.repositories.AccountRepository;
 import io.jsonwebtoken.JwtException;
@@ -14,8 +15,6 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * This class represents an interceptor to perform authentication before mapping takes place
@@ -63,7 +62,7 @@ public class AuthenticationInterceptor extends SingleMappingInterceptor {
      * @param request the request to authenticate
      * @return true if authenticated false if not authenticated
      */
-    private boolean authenticate(HttpServletRequest request) {
+    private boolean authenticate(APIRequest request) {
         String authorization = request.getHeader("Authorization");
 
         if (authorization != null && authorization.contains(BEARER)) {
@@ -94,7 +93,7 @@ public class AuthenticationInterceptor extends SingleMappingInterceptor {
      */
     @Override
     public void onBeforeMapping(MappingContext context, MappingInterceptorChain chain) {
-        HttpServletRequest request = context.getRequest();
+        APIRequest request = context.getRequest();
 
         if (authenticate(request)) {
             log.info("JWT Authentication Succeeded. Proceeding with request mapping");

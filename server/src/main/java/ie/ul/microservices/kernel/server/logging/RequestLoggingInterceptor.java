@@ -3,8 +3,9 @@ package ie.ul.microservices.kernel.server.logging;
 import ie.ul.microservices.kernel.api.interception.mapping.AllMappingInterceptor;
 import ie.ul.microservices.kernel.api.interception.mapping.MappingContext;
 import ie.ul.microservices.kernel.api.interception.mapping.MappingInterceptorChain;
+import ie.ul.microservices.kernel.api.requests.URL;
 import ie.ul.microservices.kernel.server.models.Microservice;
-import ie.ul.microservices.kernel.server.models.URL;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.DependsOn;
@@ -32,7 +33,7 @@ public class RequestLoggingInterceptor extends AllMappingInterceptor {
      */
     @Override
     public void onBeforeMapping(MappingContext context, MappingInterceptorChain chain) {
-        log.info("BeforeMapping: Initial URL: {}, From: {}", context.getURL(), context.getRequest().getRemoteAddr());
+        log.info("BeforeMapping: Initial URL: {}, From: {}", context.getURL(), context.getRequest().getWrappedRequest().getRemoteAddr());
         chain.next(context);
     }
 
@@ -52,7 +53,7 @@ public class RequestLoggingInterceptor extends AllMappingInterceptor {
         if (microservice != null) {
             log.info("AfterMapping: Routed URL: {}, Microservice Name: {}, Microservice ID: {}", context.getURL(), microservice.getMicroserviceName(), microservice.getMicroserviceID());
         } else {
-            URL url = URL.fromServletRequest(context.getRequest());
+            URL url = context.getRequest().getRequestURL();
             String microserviceName = url.getBodyParts()[0];
             log.error("AfterMapping: Failed to route request as Microservice {} could not be found for URL: {}", microserviceName, url);
         }
