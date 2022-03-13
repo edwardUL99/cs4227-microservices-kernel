@@ -200,7 +200,7 @@ public class MappingServiceImpl implements MappingService {
         Microservice resultService = result.getMicroservice();
         URL contextURL = context.getURL();
 
-        if (contextURL == null) {
+        if (contextURL == null || contextService == null) {
             context.setURL(URL.fromServletRequest(context.getRequest()));
         }
 
