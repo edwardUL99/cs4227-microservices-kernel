@@ -37,7 +37,7 @@ public class RegistrationControllerImpl implements RegistrationController {
         if(id == null) {
             httpStatus = HttpStatus.NOT_ACCEPTABLE;
         }
-
+        
         RegistrationResponse registrationResponse = new RegistrationResponse(id);
         return new ResponseEntity<>(registrationResponse, httpStatus);
     }
