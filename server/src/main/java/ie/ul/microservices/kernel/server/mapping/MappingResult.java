@@ -1,10 +1,10 @@
 package ie.ul.microservices.kernel.server.mapping;
 
+import ie.ul.microservices.kernel.api.requests.APIRequest;
 import ie.ul.microservices.kernel.server.models.Microservice;
-import ie.ul.microservices.kernel.server.models.URL;
+import ie.ul.microservices.kernel.api.requests.URL;
 import org.springframework.http.ResponseEntity;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
 
 /**
@@ -26,7 +26,7 @@ public class MappingResult {
     /**
      * The request after mapping
      */
-    private HttpServletRequest request;
+    private APIRequest request;
     /**
      * The response entity from the context.
      */
@@ -45,7 +45,7 @@ public class MappingResult {
      * @param microservice the mapped microservice
      * @param response the response to set
      */
-    public MappingResult(boolean terminated, URL url, Microservice microservice, HttpServletRequest request, ResponseEntity<?> response) {
+    public MappingResult(boolean terminated, URL url, Microservice microservice, APIRequest request, ResponseEntity<?> response) {
         this.terminated = terminated;
         this.url = url;
         this.microservice = microservice;
@@ -105,7 +105,7 @@ public class MappingResult {
      * Get the request object after mapping
      * @return request object after mapping
      */
-    public HttpServletRequest getRequest() {
+    public APIRequest getRequest() {
         return request;
     }
 
@@ -113,7 +113,7 @@ public class MappingResult {
      * Set the request after mapping
      * @param request new after mapping request
      */
-    public void setRequest(HttpServletRequest request) {
+    public void setRequest(APIRequest request) {
         this.request = request;
     }
 

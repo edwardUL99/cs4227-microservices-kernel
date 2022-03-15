@@ -40,10 +40,14 @@ public class RegistryImpl implements Registry {
      */
     @Override
     public Microservice getMicroservice(String name){
-        for (Microservice m : microservices.get(name).values()) {
-           if(m.isHealthy()){
-               return m;
-           }
+        
+        if(microservices.containsKey(name)){
+            Map<String, Microservice> microserviceMap = microservices.get(name);
+            for (Microservice m : microserviceMap.values()) {
+                if(m.isHealthy()){
+                    return m;
+                }
+            }
         }
         return null;
     }
@@ -64,6 +68,16 @@ public class RegistryImpl implements Registry {
         } else {
             microservices.get(microservice.getMicroserviceName()).put(microservice.getMicroserviceID(), microservice);
         }
+    }
+
+    @Override
+    public String registerMicroservice(String name, String host, int port) {
+        Microservice microservice = new Microservice(host, port, name, false, null);
+        String id = generateID(microservice);
+        microservice.setMicroserviceID(id);
+
+        registerMicroservice(microservice);
+        return id;
     }
 
     @Override

@@ -1,11 +1,10 @@
 package ie.ul.microservices.kernel.api.interception.mapping;
 
 import ie.ul.microservices.kernel.api.interception.Context;
+import ie.ul.microservices.kernel.api.requests.APIRequest;
 import ie.ul.microservices.kernel.server.models.Microservice;
-import ie.ul.microservices.kernel.server.models.URL;
+import ie.ul.microservices.kernel.api.requests.URL;
 import org.springframework.http.ResponseEntity;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * This interface represents the context object for mapping the requests
@@ -21,13 +20,13 @@ public interface MappingContext extends Context {
      * Get the request object received representing the request being mapped
      * @return the request being mapped
      */
-    HttpServletRequest getRequest();
+    APIRequest getRequest();
 
     /**
      * Set the request object in the context
      * @param request the request of the context
      */
-    void setRequest(HttpServletRequest request);
+    void setRequest(APIRequest request);
 
     /**
      * Get the response object that will be sent back to the client. This is usually null, but can be set using {@link #setResponse(ResponseEntity)}

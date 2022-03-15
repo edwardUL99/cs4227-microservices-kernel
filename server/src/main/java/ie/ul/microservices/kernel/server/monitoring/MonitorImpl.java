@@ -3,7 +3,7 @@ package ie.ul.microservices.kernel.server.monitoring;
 import com.google.gson.Gson;
 import ie.ul.microservices.kernel.api.client.HealthResponse;
 import ie.ul.microservices.kernel.server.models.Microservice;
-import ie.ul.microservices.kernel.server.registration.RegistryImpl;
+import ie.ul.microservices.kernel.server.registration.Registry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -17,11 +17,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @EnableScheduling
 @Service
 public class MonitorImpl implements Monitor {
-    private final RegistryImpl registry;
+    private final Registry registry;
     private AtomicBoolean isMonitoring = new AtomicBoolean(true);
 
     @Autowired
-    public MonitorImpl(RegistryImpl registry) {
+    public MonitorImpl(Registry registry) {
         this.registry = registry;
     }
 

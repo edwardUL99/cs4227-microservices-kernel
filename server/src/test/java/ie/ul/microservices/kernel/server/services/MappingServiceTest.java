@@ -2,13 +2,16 @@ package ie.ul.microservices.kernel.server.services;
 
 import ie.ul.microservices.kernel.api.interception.mapping.DispatcherContext;
 import ie.ul.microservices.kernel.api.interception.mapping.MappingDispatcher;
+import ie.ul.microservices.kernel.api.requests.APIRequest;
+import ie.ul.microservices.kernel.api.requests.APIRequestFactory;
 import ie.ul.microservices.kernel.server.Constants;
 import ie.ul.microservices.kernel.api.interception.mapping.MappingInterceptorChain;
 import ie.ul.microservices.kernel.api.interception.mapping.MappingContext;
 import ie.ul.microservices.kernel.api.interception.mapping.MappingInterceptor;
 import ie.ul.microservices.kernel.server.mapping.MappingResult;
 import ie.ul.microservices.kernel.server.models.Microservice;
-import ie.ul.microservices.kernel.server.models.URL;
+import ie.ul.microservices.kernel.api.requests.URL;
+import ie.ul.microservices.kernel.server.monitoring.GenericHealthReporterImpl;
 import ie.ul.microservices.kernel.server.registration.Registry;
 
 import org.junit.jupiter.api.AfterEach;
@@ -188,7 +191,7 @@ public class MappingServiceTest {
     /**
      * The test microservice object
      */
-    public static final Microservice MICROSERVICE = new Microservice(HOST, PORT, NAME, true);
+    public static final Microservice MICROSERVICE = new Microservice(HOST, PORT, NAME, true, new GenericHealthReporterImpl(true));
 
     @BeforeEach
     private void init() {
@@ -197,7 +200,7 @@ public class MappingServiceTest {
         interceptor.context = context;
 
         dispatcher = DispatcherContext.getDispatcher();
-
+        dispatcher.clearInterceptors(); // clear any interceptors that are not related to testing the service
         dispatcher.registerMappingInterceptor(interceptor, MappingDispatcher.RegistrationStrategy.ALL);
     }
 
@@ -228,7 +231,7 @@ public class MappingServiceTest {
      */
     @Test
     public void shouldMapRequestSuccessfully() {
-        HttpServletRequest request = createMockRequest();
+        APIRequest request = APIRequestFactory.createRequest(createMockRequest());
         MappingResult expected = new MappingResult(false, URL.fromParameters("http", "127.0.0.1", 1234, "buy", null),
                 MICROSERVICE, request, null);
 
@@ -253,7 +256,7 @@ public class MappingServiceTest {
         MappingInterceptor interceptor = new SetMicroserviceInterceptor();
         dispatcher.registerMappingInterceptor(interceptor, MappingDispatcher.RegistrationStrategy.BEFORE);
 
-        HttpServletRequest request = createMockRequest();
+        APIRequest request = APIRequestFactory.createRequest(createMockRequest());
         MappingResult expected = new MappingResult(false, URL.fromParameters("http", "127.0.0.1", 1234, "buy", null),
                 MICROSERVICE, request, null);
 
@@ -273,8 +276,7 @@ public class MappingServiceTest {
         MappingInterceptor interceptor = new EarlyEndInterceptor();
         dispatcher.registerMappingInterceptor(interceptor, MappingDispatcher.RegistrationStrategy.BEFORE);
 
-        HttpServletRequest request = createMockRequest();
-
+        APIRequest request = APIRequestFactory.createRequest(createMockRequest());
         MappingResult result = mappingService.mapRequest(request);
 
         assertTrue(result.isTerminated());
