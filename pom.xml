@@ -15,8 +15,8 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
-    <groupId>ie.ul.microservices</groupId>
-    <artifactId>kernel</artifactId>
+    <groupId>ie.ul.microservices.kernel</groupId>
+    <artifactId>parent</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>CS4227 Microservices Kernel</name>
