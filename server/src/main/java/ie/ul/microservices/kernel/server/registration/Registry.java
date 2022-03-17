@@ -41,4 +41,6 @@ public interface Registry {
      * @param microservice the microservice to unregister
      */
     void unregisterMicroservice(Microservice microservice);
+
+    void unregisterMicroservice(String name, String id);
 }

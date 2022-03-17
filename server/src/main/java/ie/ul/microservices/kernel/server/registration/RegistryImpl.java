@@ -89,6 +89,11 @@ public class RegistryImpl implements Registry {
 
     }
 
+    public void unregisterMicroservice(String microserviceName, String id) {
+        microservices.get(microserviceName).remove(id);
+
+    }
+
     /**
      * randomly generates an id for the given microservice
      * @param microservice the microservice that needs a random id
