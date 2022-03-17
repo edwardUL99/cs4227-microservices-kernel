@@ -31,13 +31,13 @@ public class MonitorController implements Monitor {
     @Autowired
     public MonitorController(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
+        microservices.add(new MicroserviceTestClass("localhost", 8900, "microservice-A", false));
+        microservices.add(new MicroserviceTestClass("localhost", 8901, "microservice-B", false));
     }
 
     // test method
     @Scheduled(fixedDelay = 5000)
     public void testStartMonitoring() {
-        microservices.add(new MicroserviceTestClass("localhost", 8900, "microservice-A", false));
-        microservices.add(new MicroserviceTestClass("localhost", 8901, "microservice-B", false));
         if(isMonitoring.get()) {
             for(MicroserviceTestClass ms : microservices) {
                 String microserviceName = ms.getMicroserviceName();
