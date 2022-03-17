@@ -31,14 +31,6 @@ public interface Registry {
     String registerMicroservice(String name, String host, int port);
 
     /**
-     * Each time the microservice registry is checked for
-     * unhealthy services this function is called to
-     * unregister them from the registry.
-     * @param unHealthyMicroservices
-     */
-    void handleUnhealthyMicroservices(List<Microservice> unHealthyMicroservices);
-
-    /**
      * Unregister the microservice from the registry
      * @param microservice the microservice to unregister
      */

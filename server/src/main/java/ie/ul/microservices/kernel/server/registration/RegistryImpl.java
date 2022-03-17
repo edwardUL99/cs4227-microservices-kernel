@@ -7,13 +7,18 @@ import java.util.Map;
 import java.util.UUID;
 
 import ie.ul.microservices.kernel.server.models.Microservice;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 @Service
 @Scope("singleton")
-public class RegistryImpl implements Registry {
-
+public class RegistryImpl implements Registry, ApplicationContextAware {
+    private static ApplicationContext context;
     /**
      * A map that use the name of the microservice as the key
      * and the map of microservice IDs pointing to the microservice instance with the specified name as the value
@@ -72,23 +77,12 @@ public class RegistryImpl implements Registry {
 
     @Override
     public String registerMicroservice(String name, String host, int port) {
-        Microservice microservice = new Microservice(host, port, name, false, null);
+        Microservice microservice = new Microservice(host, port, name, false);
         String id = generateID(microservice);
         microservice.setMicroserviceID(id);
 
         registerMicroservice(microservice);
         return id;
-    }
-
-    @Override
-    public void handleUnhealthyMicroservices(List<Microservice> unHealthyMicroservices){
-        for(Microservice ms : unHealthyMicroservices) {
-            //console output
-            System.out.println("Unhealthy microservice " + ms.getMicroserviceName() + " with ID "
-                    + ms.getMicroserviceID() + " removed from registry\n");
-            unregisterMicroservice(ms);
-        }
-        System.out.println(getMicroservices().size() + " active microservices\n");
     }
 
     /**
@@ -113,5 +107,13 @@ public class RegistryImpl implements Registry {
         }
         return id;
     }
-    
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.context = applicationContext;
+    }
+
+    public static ApplicationContext getContext() {
+        return context;
+    }
 }

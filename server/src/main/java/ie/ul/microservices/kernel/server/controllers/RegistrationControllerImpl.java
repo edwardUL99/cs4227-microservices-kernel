@@ -7,9 +7,14 @@ import ie.ul.microservices.kernel.api.server.UnregistrationRequest;
 import ie.ul.microservices.kernel.api.server.UnregistrationResponse;
 import ie.ul.microservices.kernel.server.registration.Registry;
 
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * This is the implementation of the registration controller
@@ -17,13 +22,16 @@ import org.springframework.web.bind.annotation.RestController;
  * TODO add real implementations
  */
 @RestController
-public class RegistrationControllerImpl implements RegistrationController {
+public class RegistrationControllerImpl implements RegistrationController, ApplicationContextAware {
 
+    private static ApplicationContext context;
     private final Registry registry;
 
     public RegistrationControllerImpl(Registry registry){
         this.registry = registry;
     }
+
+
     /**
      * Register the microservice with the kernel through the defined registration request object.
      *
@@ -61,5 +69,14 @@ public class RegistrationControllerImpl implements RegistrationController {
 
         UnregistrationResponse unregistrationResponse = new UnregistrationResponse();
         return new ResponseEntity<>(unregistrationResponse, httpStatus);
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        context = applicationContext;
+    }
+
+    public static ApplicationContext getContext() {
+        return context;
     }
 }

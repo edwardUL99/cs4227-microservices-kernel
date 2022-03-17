@@ -6,11 +6,9 @@ package ie.ul.microservices.kernel.api.client;
 
 public class HealthResponse {
     private String microserviceName;
-    private String microserviceID;
 
-    public HealthResponse(String microserviceName, String microserviceID) {
+    public HealthResponse(String microserviceName) {
         this.microserviceName = microserviceName;
-        this.microserviceID = microserviceID;
     }
 
     public String getMicroserviceName() {
@@ -19,14 +17,6 @@ public class HealthResponse {
 
     public void setMicroserviceName(String microserviceName) {
         this.microserviceName = microserviceName;
-    }
-
-    public String getMicroserviceID() {
-        return microserviceID;
-    }
-
-    public void setMicroserviceID(String microserviceID) {
-        this.microserviceID = microserviceID;
     }
 
 }

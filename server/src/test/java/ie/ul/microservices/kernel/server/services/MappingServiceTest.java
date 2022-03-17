@@ -11,7 +11,6 @@ import ie.ul.microservices.kernel.api.interception.mapping.MappingInterceptor;
 import ie.ul.microservices.kernel.server.mapping.MappingResult;
 import ie.ul.microservices.kernel.server.models.Microservice;
 import ie.ul.microservices.kernel.api.requests.URL;
-import ie.ul.microservices.kernel.server.monitoring.GenericHealthReporterImpl;
 import ie.ul.microservices.kernel.server.registration.Registry;
 
 import org.junit.jupiter.api.AfterEach;
@@ -191,7 +190,7 @@ public class MappingServiceTest {
     /**
      * The test microservice object
      */
-    public static final Microservice MICROSERVICE = new Microservice(HOST, PORT, NAME, true, new GenericHealthReporterImpl(true));
+    public static final Microservice MICROSERVICE = new Microservice(HOST, PORT, NAME, true);
 
     @BeforeEach
     private void init() {
