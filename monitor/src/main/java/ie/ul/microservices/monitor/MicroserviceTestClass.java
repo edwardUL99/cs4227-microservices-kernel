@@ -1,9 +1,4 @@
-package ie.ul.microservices.kernel.server.models;
-
-import ie.ul.microservices.kernel.api.client.FrontController;
-import ie.ul.microservices.kernel.api.client.HealthResponse;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+package ie.ul.microservices.monitor;
 
 import java.util.Objects;
 
@@ -12,21 +7,21 @@ import java.util.Objects;
  * TODO decide what fields to add to it
  */
 
-public class Microservice {
+public class MicroserviceTestClass {
     String microserviceName;
     String host;
     int port;
     boolean healthStatus;
     String microserviceID;
 
-    public Microservice(String host, int port, String microserviceName, boolean healthStatus) {
+    public MicroserviceTestClass(String host, int port, String microserviceName, boolean healthStatus) {
         this.host = host;
         this.port = port;
         this.microserviceName = microserviceName;
         this.healthStatus = healthStatus;
     }
 
-    public Microservice() {
+    public MicroserviceTestClass() {
         this(null, 0, null, false);
     }
 
@@ -101,7 +96,7 @@ public class Microservice {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Microservice that = (Microservice) o;
+        MicroserviceTestClass that = (MicroserviceTestClass) o;
         return port == that.port && healthStatus == that.healthStatus && Objects.equals(host, that.host) && Objects.equals(microserviceName, that.microserviceName);
     }
 
