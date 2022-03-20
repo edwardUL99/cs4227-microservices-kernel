@@ -31,10 +31,19 @@ public class RequestParserAdapter implements RequestParser {
     }
 
     /**
+     * Construct an adapter with the given parsing delegate which uses the default {@link APIRequest#getBody()} as
+     * the RequestTransformerDelegate
+     * @param parserDelegate the delegate object for parsing
+     */
+    public RequestParserAdapter(RequestParserDelegate parserDelegate) {
+        this(parserDelegate, APIRequest::getBody);
+    }
+
+    /**
      * Creates an adapter with the default implementation of JSON parsing
      */
     public RequestParserAdapter() {
-        this(body -> new RequestParserImpl().parseBody(body), APIRequest::getBody);
+        this(body -> new RequestParserImpl().parseBody(body));
     }
 
     /**
