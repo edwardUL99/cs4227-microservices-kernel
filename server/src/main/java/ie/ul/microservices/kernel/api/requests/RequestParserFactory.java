@@ -1,6 +1,6 @@
 package ie.ul.microservices.kernel.api.requests;
 
-import ie.ul.microservices.kernel.api.requests.adapters.BodyParserAdapter;
+import ie.ul.microservices.kernel.api.requests.adapters.RequestParserAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,11 +15,11 @@ public final class RequestParserFactory {
     /**
      * The map of registered adapters that can be used to adapt the parsing of the content type
      */
-    private static final Map<String, BodyParserAdapter> adapters = new HashMap<>();
+    private static final Map<String, RequestParserAdapter> adapters = new HashMap<>();
     /**
      * The default parser for JSON requests
      */
-    private static final RequestBodyParser defaultParser = new RequestBodyParserImpl();
+    private static final RequestParser defaultParser = new RequestParserImpl();
     /**
      * Used for logging
      */
@@ -35,7 +35,7 @@ public final class RequestParserFactory {
      * @param contentType the content type to register the adapter with
      * @param adapter the adapter to register
      */
-    public static void registerAdapter(String contentType, BodyParserAdapter adapter) {
+    public static void registerAdapter(String contentType, RequestParserAdapter adapter) {
         adapters.put(contentType, adapter);
     }
 
@@ -44,7 +44,7 @@ public final class RequestParserFactory {
      * @param request the request to determine what parser to retrieve
      * @return the retrieved parse
      */
-    public static RequestBodyParser getParser(HttpServletRequest request) {
+    public static RequestParser getParser(HttpServletRequest request) {
         String contentType = request.getContentType();
 
         if (contentType == null) {
@@ -56,7 +56,7 @@ public final class RequestParserFactory {
             log.debug("Content-Type {} provided, using the default JSON Request Body Parser", DEFAULT_CONTENT);
             return defaultParser;
         } else {
-            RequestBodyParser parser = adapters.get(contentType);
+            RequestParser parser = adapters.get(contentType);
 
             if (parser == null)
                 throw new RequestException("The Content-Type " + contentType + " is not directly supported and no adapter has been registered to handle it");

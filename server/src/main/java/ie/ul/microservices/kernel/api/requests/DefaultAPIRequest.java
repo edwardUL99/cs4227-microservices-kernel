@@ -24,7 +24,7 @@ public class DefaultAPIRequest implements APIRequest {
     /**
      * The parser for parsing the request body
      */
-    private final RequestBodyParser parser;
+    private final RequestParser parser;
     /**
      * The parsed body. Cached here after the initial call to {@link #getBody()}
      */
@@ -35,7 +35,7 @@ public class DefaultAPIRequest implements APIRequest {
      * @param wrapped the wrapped servlet request
      */
     public DefaultAPIRequest(HttpServletRequest wrapped) {
-        this(wrapped, new RequestBodyParserImpl());
+        this(wrapped, new RequestParserImpl());
     }
 
     /**
@@ -43,7 +43,7 @@ public class DefaultAPIRequest implements APIRequest {
      * @param wrapped the wrapped API request
      * @param parser the parsing for parsing the request body
      */
-    public DefaultAPIRequest(HttpServletRequest wrapped, RequestBodyParser parser) {
+    public DefaultAPIRequest(HttpServletRequest wrapped, RequestParser parser) {
         this.wrapped = wrapped;
 
         Enumeration<String> headerNames = wrapped.getHeaderNames();

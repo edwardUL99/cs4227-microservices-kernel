@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 import java.util.function.Function;
 
 /**
- * This interface represents the delegate function for the BodyParserAdapter.
+ * This interface represents the delegate function for the RequestParserAdapter.
  * It is a delegate that takes as a parameter an Object representing the body and then returns the JsonObject
  */
-public interface BodyParserDelegate extends Function<Object, JsonObject> { }
+public interface RequestParserDelegate extends Function<Object, JsonObject> { }

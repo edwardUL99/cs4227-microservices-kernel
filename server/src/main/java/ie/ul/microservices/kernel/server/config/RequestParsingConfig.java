@@ -6,7 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import ie.ul.microservices.kernel.api.requests.RequestException;
 import ie.ul.microservices.kernel.api.requests.RequestParserFactory;
-import ie.ul.microservices.kernel.api.requests.adapters.BodyParserAdapter;
+import ie.ul.microservices.kernel.api.requests.adapters.RequestParserAdapter;
 import ie.ul.microservices.kernel.api.requests.adapters.XMLRequest;
 import org.springframework.context.annotation.Configuration;
 
@@ -86,8 +86,8 @@ public class RequestParsingConfig {
      */
     private void configureRequestParsingAdapters() {
         RequestParserFactory.registerAdapter("application/xml",
-                new BodyParserAdapter(this::parseXMLBody, request -> new XMLRequest(request.getWrappedRequest())));
+                new RequestParserAdapter(this::parseXMLBody, request -> new XMLRequest(request.getWrappedRequest())));
         RequestParserFactory.registerAdapter("application/x-www-form-urlencoded",
-                new BodyParserAdapter(this::parseFormBody, request -> request.getWrappedRequest().getParameterMap()));
+                new RequestParserAdapter(this::parseFormBody, request -> request.getWrappedRequest().getParameterMap()));
     }
 }

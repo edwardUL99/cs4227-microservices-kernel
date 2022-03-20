@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 /**
  * This interface parses the JSON Request Body
  */
-public interface RequestBodyParser {
+public interface RequestParser {
     /**
      * Parse the body of the servlet request into JSON
      * @param request the request to parse

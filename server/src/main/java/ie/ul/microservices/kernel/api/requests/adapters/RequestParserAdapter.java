@@ -2,39 +2,39 @@ package ie.ul.microservices.kernel.api.requests.adapters;
 
 import com.google.gson.JsonObject;
 import ie.ul.microservices.kernel.api.requests.APIRequest;
-import ie.ul.microservices.kernel.api.requests.RequestBodyParser;
-import ie.ul.microservices.kernel.api.requests.RequestBodyParserImpl;
+import ie.ul.microservices.kernel.api.requests.RequestParser;
+import ie.ul.microservices.kernel.api.requests.RequestParserImpl;
 import ie.ul.microservices.kernel.api.requests.RequestException;
 
 /**
- * This class provides the pluggable adapter adapting the RequestBodyParser interface
+ * This class provides the pluggable adapter adapting the RequestParser interface
  */
-public class BodyParserAdapter implements RequestBodyParser {
+public class RequestParserAdapter implements RequestParser {
     /**
-     * The delegate for the adapter
+     * The delegate for parsing of the request body
      */
-    private final BodyParserDelegate parserDelegate;
+    private final RequestParserDelegate parserDelegate;
     /**
      * The delegate for transforming the APIRequest into a body suitable for adaptation. For example, if you want to
      * transform the request into an XMLRequest for XML adaptation, you can use request -> new XMLRequest(request.getWrappedRequest())
      */
-    private final BodyProducerDelegate producerDelegate;
+    private final RequestTransformerDelegate transformerDelegate;
 
     /**
      * Construct an adapter with the given delegates which parses the Object body and returns the JsonObject
      * @param parserDelegate the delegate object for parsing
-     * @param producerDelegate the delegate object to use for transforming the body
+     * @param transformerDelegate the delegate object to use for transforming the body
      */
-    public BodyParserAdapter(BodyParserDelegate parserDelegate, BodyProducerDelegate producerDelegate) {
+    public RequestParserAdapter(RequestParserDelegate parserDelegate, RequestTransformerDelegate transformerDelegate) {
         this.parserDelegate = parserDelegate;
-        this.producerDelegate = producerDelegate;
+        this.transformerDelegate = transformerDelegate;
     }
 
     /**
      * Creates an adapter with the default implementation of JSON parsing
      */
-    public BodyParserAdapter() {
-        this(body -> new RequestBodyParserImpl().parseBody(body), APIRequest::getBody);
+    public RequestParserAdapter() {
+        this(body -> new RequestParserImpl().parseBody(body), APIRequest::getBody);
     }
 
     /**
@@ -46,7 +46,7 @@ public class BodyParserAdapter implements RequestBodyParser {
      */
     @Override
     public JsonObject parseBody(APIRequest request) throws RequestException {
-        return parseBody(producerDelegate.apply(request));
+        return parseBody(transformerDelegate.apply(request));
     }
 
     /**

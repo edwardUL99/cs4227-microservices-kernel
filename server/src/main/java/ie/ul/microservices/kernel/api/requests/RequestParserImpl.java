@@ -6,7 +6,7 @@ import com.google.gson.JsonObject;
 /**
  * This class implements the request body parser
  */
-public class RequestBodyParserImpl implements RequestBodyParser {
+public class RequestParserImpl implements RequestParser {
     /**
      * The GSON object for parsing JSON
      */
