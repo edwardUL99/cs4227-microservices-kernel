@@ -1,6 +1,5 @@
 package ie.ul.microservices.kernel.api.requests;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import ie.ul.microservices.kernel.server.Constants;
 import org.springframework.http.HttpHeaders;
@@ -23,9 +22,9 @@ public class DefaultAPIRequest implements APIRequest {
      */
     private final HttpHeaders httpHeaders = new HttpHeaders();
     /**
-     * The GSON object used for parsing JSON
+     * The parser for parsing the request body
      */
-    private final Gson gson = new Gson();
+    private final RequestBodyParser parser;
     /**
      * The parsed body. Cached here after the initial call to {@link #getBody()}
      */
@@ -36,6 +35,15 @@ public class DefaultAPIRequest implements APIRequest {
      * @param wrapped the wrapped servlet request
      */
     public DefaultAPIRequest(HttpServletRequest wrapped) {
+        this(wrapped, new RequestBodyParserImpl());
+    }
+
+    /**
+     * Construct an API Request with the given request and request body parser
+     * @param wrapped the wrapped API request
+     * @param parser the parsing for parsing the request body
+     */
+    public DefaultAPIRequest(HttpServletRequest wrapped, RequestBodyParser parser) {
         this.wrapped = wrapped;
 
         Enumeration<String> headerNames = wrapped.getHeaderNames();
@@ -44,6 +52,8 @@ public class DefaultAPIRequest implements APIRequest {
             String header = headerNames.nextElement();
             this.httpHeaders.set(header, wrapped.getHeader(header));
         }
+
+        this.parser = parser;
     }
 
     /**
@@ -126,30 +136,31 @@ public class DefaultAPIRequest implements APIRequest {
      * will have JSON payloads, so it simply just parses the body if a body exists.
      *
      * @return the JSON body or null if the request does not make sense to have a body
-     * @throws IOException if the body fails to be parsed
      */
     @Override
-    public JsonObject getJSONBody() throws IOException {
-        String body = (String)getBody();
-
-        return gson.fromJson(body, JsonObject.class);
+    public JsonObject getJSONBody() {
+        return parser.parseBody(this);
     }
 
     /**
      * Gets the body of the wrapper request
      *
      * @return the request body, usually JSON body as a String
-     * @throws IOException if the body fails to be parsed
+     * @throws RequestException if the body fails to be parsed
      */
     @Override
-    public Object getBody() throws IOException {
+    public Object getBody() throws RequestException {
         if (getMethod() == HttpMethod.GET) {
             return null;
         } else {
-            if (body == null)
-                body = Constants.parseBody(wrapped);
+            try {
+                if (body == null)
+                    body = Constants.parseBody(wrapped);
 
-            return body;
+                return body;
+            } catch (IOException ex) {
+                throw new RequestException("Failed to parse body", ex);
+            }
         }
     }
 }
