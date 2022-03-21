@@ -58,7 +58,7 @@ public class GatewayController {
      */
     private ResponseEntity<?> dispatch(HttpServletRequest request) {
         try {
-            APIRequest apiRequest = APIRequestFactory.createRequestForContentType(request);
+            APIRequest apiRequest = APIRequestFactory.createRequest(request);
             MappingResult result = this.mappingService.mapRequest(apiRequest);
             ResponseEntity<?> resultResponse = result.getResponse();
 

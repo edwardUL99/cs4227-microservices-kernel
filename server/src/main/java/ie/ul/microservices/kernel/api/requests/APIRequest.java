@@ -5,7 +5,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 
 /**
  * This interface provides an APIRequest which is implemented as a facade to the HttpServletRequest
@@ -62,15 +61,14 @@ public interface APIRequest {
      * Parses the body into a JSON object. This interface assumes that all requests coming to and from the kernel
      * will have JSON payloads, so it simply just parses the body if a body exists.
      * @return the JSON body or null if the request does not make sense to have a body
-     * @throws IOException if the body fails to be parsed
      */
-    JsonObject getJSONBody() throws IOException;
+    JsonObject getJSONBody();
 
     /**
      * Gets the body of the wrapper request. This is an expensive operation, so parsing of the body should only be carried out
      * on the initial call
      * @return the request body, usually JSON body as a String
-     * @throws IOException if the body fails to be parsed
+     * @throws RequestException if the body fails to be parsed
      */
-    Object getBody() throws IOException;
+    Object getBody() throws RequestException;
 }
