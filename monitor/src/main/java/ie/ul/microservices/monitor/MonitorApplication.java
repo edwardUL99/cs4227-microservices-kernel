@@ -15,6 +15,7 @@ public class MonitorApplication {
         MonitorController monitorController = context.getBean(MonitorController.class);
         System.out.println("Monitoring service initialized");
         monitorController.testStartMonitoring();
+        //monitorController.startMonitoring();
     }
 
     @Bean

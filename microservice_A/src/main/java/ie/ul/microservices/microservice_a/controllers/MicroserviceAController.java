@@ -2,11 +2,13 @@ package ie.ul.microservices.microservice_a.controllers;
 
 import ie.ul.microservices.kernel.api.client.FrontController;
 import ie.ul.microservices.kernel.api.client.HealthResponse;
+import ie.ul.microservices.kernel.api.client.RegistrationRunner;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,7 +24,7 @@ public class MicroserviceAController implements ApplicationContextAware, FrontCo
     private String kernelURL;
 
     @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    public void setApplicationContext(ApplicationContext applicationContext) {
         this.context = applicationContext;
     }
 
