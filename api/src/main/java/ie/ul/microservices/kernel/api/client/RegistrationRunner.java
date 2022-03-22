@@ -2,7 +2,6 @@ package ie.ul.microservices.kernel.api.client;
 
 import java.net.InetAddress;
 
-import javax.swing.Spring;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,7 +10,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 
-import ch.qos.logback.core.subst.Token.Type;
 import ie.ul.microservices.kernel.api.requests.Request;
 import ie.ul.microservices.kernel.api.requests.RequestBuilder;
 import ie.ul.microservices.kernel.api.requests.RequestSender;
@@ -33,7 +31,7 @@ public class RegistrationRunner implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         environment.getProperty("server.port");
-        String host = InetAddress.getLocalHost().getHostName();
+        String host = InetAddress.getLocalHost().getHostAddress();
 
         String url = kernelURL + "/api/gateway/connect/";
 

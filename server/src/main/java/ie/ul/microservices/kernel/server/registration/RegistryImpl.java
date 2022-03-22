@@ -107,7 +107,7 @@ public class RegistryImpl implements Registry, ApplicationContextAware {
      */
     private String generateID(Microservice microservice){
         String id = UUID.randomUUID().toString();
-        if (microservices.get(microservice.getMicroserviceName()).containsKey(id)){
+        if (microservices.containsKey(microservice.getMicroserviceName()) && microservices.get(microservice.getMicroserviceName()).containsKey(id)){
             id = generateID(microservice);
         }
         return id;
