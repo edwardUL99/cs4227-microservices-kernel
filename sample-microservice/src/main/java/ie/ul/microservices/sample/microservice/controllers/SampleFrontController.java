@@ -1,4 +1,4 @@
-package ie.ul.microservices.sample.mircroservice.controllers;
+package ie.ul.microservices.sample.microservice.controllers;
 
 import ie.ul.microservices.kernel.api.client.FrontController;
 import ie.ul.microservices.kernel.api.client.HealthResponse;
@@ -23,7 +23,6 @@ public class SampleFrontController implements FrontController {
      * Sent as a POST mapping since it can be considered to "change" something on the server, i.e. the status of it
      */
     @Override
-    public ResponseEntity<?> shutdown() {
-        return null;
+    public void shutdown() {
     }
 }
