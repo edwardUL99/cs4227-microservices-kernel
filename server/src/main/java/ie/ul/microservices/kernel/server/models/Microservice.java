@@ -2,7 +2,6 @@ package ie.ul.microservices.kernel.server.models;
 
 import ie.ul.microservices.kernel.api.client.FrontController;
 import ie.ul.microservices.kernel.api.client.HealthResponse;
-import ie.ul.microservices.kernel.server.monitoring.HealthReporter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -13,36 +12,36 @@ import java.util.Objects;
  * TODO decide what fields to add to it
  */
 
-public class Microservice implements FrontController{
+public class Microservice {
     String microserviceName;
     String host;
     int port;
-    HealthReporter healthReporter;    
     boolean healthStatus;
     String microserviceID;
 
-    public Microservice(String host, int port, String microserviceName, boolean healthStatus, HealthReporter healthReporter) {
+    public Microservice(String host, int port, String microserviceName, boolean healthStatus) {
         this.host = host;
         this.port = port;
         this.microserviceName = microserviceName;
         this.healthStatus = healthStatus;
-        this.healthReporter = healthReporter;
     }
 
     public Microservice() {
-        this(null, 0, null, false, null);
+        this(null, 0, null, false);
     }
 
     /**
      * gets the health status of the microservice
+     *
      * @return health status of the microservice
      */
-    public boolean isHealthy(){
+    public boolean isHealthy() {
         return healthStatus;
     }
 
     /**
      * Get the hostname of the microservice
+     *
      * @return the microservice hostname
      */
     public String getHost() {
@@ -51,6 +50,7 @@ public class Microservice implements FrontController{
 
     /**
      * Set the microservice hostname
+     *
      * @param host the host of the microservice
      */
     public void setHost(String host) {
@@ -59,6 +59,7 @@ public class Microservice implements FrontController{
 
     /**
      * The port of the microservice
+     *
      * @return the microservice port
      */
     public int getPort() {
@@ -67,6 +68,7 @@ public class Microservice implements FrontController{
 
     /**
      * Set the port of the microservice
+     *
      * @param port the microservice port
      */
     public void setPort(int port) {
@@ -74,29 +76,23 @@ public class Microservice implements FrontController{
     }
 
     /**
-     * sets the health status of the microservice to specified health status
-     * @param healthStatus new health status of the microservice
-     */
-    public void setHealthStatus(boolean healthStatus){
-        this.healthStatus = healthStatus;
-    }
-
-    /**
      * Get the name of the microservice
+     *
      * @return the microservice name
      */
     public String getMicroserviceName() {
         return microserviceName;
     }
 
+    /**
+     * Set the microserviceID
+     *
+     * @return microserviceID the ID of the microservice
+     */
     public String getMicroserviceID() {
         return microserviceID;
     }
 
-    /**
-     * Set the microserviceID
-     * @param microserviceID the ID of the microservice
-     */
     public void setMicroserviceName(String microserviceName) {
         this.microserviceName = microserviceName;
     }
@@ -118,25 +114,13 @@ public class Microservice implements FrontController{
         this.microserviceID = microserviceID;
     }
 
-    @Override
-    public ResponseEntity<HealthResponse> health() {
-        HttpStatus httpStatus;
-        boolean isHealthy = healthReporter.isHealthy();
-
-        if(isHealthy) {
-            httpStatus = HttpStatus.OK;
-        } else {
-            httpStatus = HttpStatus.NOT_ACCEPTABLE;
-        }
-
-        HealthResponse healthResponse = new HealthResponse(getMicroserviceName(), getMicroserviceID(), httpStatus);
-        //create ResponseEntity with body and status code
-        return new ResponseEntity<>(healthResponse, httpStatus);
+    /**
+     * sets the health status of the microservice to specified health status
+     *
+     * @param healthStatus new health status of the microservice
+     */
+    public void setHealthStatus(boolean healthStatus) {
+        this.healthStatus = healthStatus;
     }
-
-    @Override
-    public ResponseEntity<?> shutdown() {
-        return null;
-    }
-
 }
+

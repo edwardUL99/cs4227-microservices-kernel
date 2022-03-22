@@ -25,6 +25,6 @@ public interface FrontController {
      * Sent as a POST mapping since it can be considered to "change" something on the server, i.e. the status of it
      */
     @PostMapping("/shutdown")
-    ResponseEntity<?> shutdown();
+    void shutdown();
 
 }

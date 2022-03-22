@@ -38,7 +38,6 @@ public class DefaultMappingContext implements MappingContext {
      */
     public DefaultMappingContext(APIRequest request) {
         this(null, request);
-        this.url = request.getRequestURL();
     }
 
     /**
@@ -49,6 +48,7 @@ public class DefaultMappingContext implements MappingContext {
     public DefaultMappingContext(Microservice microservice, APIRequest request) {
         this.microservice = microservice;
         this.request = request;
+        this.url = request.getRequestURL();
     }
 
     /**
