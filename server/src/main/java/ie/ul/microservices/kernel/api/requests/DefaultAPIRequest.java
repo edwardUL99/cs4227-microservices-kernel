@@ -53,6 +53,8 @@ public class DefaultAPIRequest implements APIRequest {
             this.httpHeaders.set(header, wrapped.getHeader(header));
         }
 
+        this.httpHeaders.set("Content-Type", "application/json"); // all requests should be parsed to application/json. If the income request is not application/json, it should be adapted
+
         this.parser = parser;
     }
 
