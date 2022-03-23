@@ -37,55 +37,57 @@ public class MonitorController implements Monitor {
     @Scheduled(fixedDelay = 5000)
     @Override
     public void startMonitoring() {
-        if(isMonitoring.get()) {
-            //List<Microservice> microservices = registry.getMicroservices();
-            for(Microservice ms : microservices){
-                String microserviceName = ms.getMicroserviceName();
-                String microserviceID = ms.getMicroserviceID();
-                String host = ms.getHost();
-                int port = ms.getPort();
-                String address = "http://" + host + ":" + port + "/front/health";
-                String shutdownAddress = "http://" + host + ":" + port + "/front/shutdown";
-
-                try {
-                    ResponseEntity<String> response = restTemplate.getForEntity(address, String.class);
-                    System.out.println("Health check:" + response);
-
-                    if(!response.getStatusCode().is2xxSuccessful()) {
-                        // send UnregistrationRequest
-                        registrationController.unregister(new UnregistrationRequest(microserviceName,microserviceID));
-                        System.out.println("UnregistrationRequest sent to registrationController");
-
-                        // deregister microservice from service registry
-                        registry.unregisterMicroservice(ms);
-                        System.out.println("RegistryImpl.unregister called on " + microserviceName);
-
-                        // shutdown microservice
-                        ResponseEntity<String> shutdown = restTemplate.getForEntity(shutdownAddress, String.class);
-                        System.out.println("MicroserviceController.shutdown() called on " + microserviceName);
-                    }
-
-                    boolean healthStatus = response.getStatusCode().is2xxSuccessful();
-                    ms.setHealthStatus(healthStatus);
-
-                    System.out.println(ms.getMicroserviceName() + " health status: " + healthStatus + "\n");
-
-
-                    // if monitoring service cannot connect to the microservice catch exception,
-                    //deregister microservice and continue loop
-                } catch (ResourceAccessException e) {
-                    System.out.println(microserviceName + " unavailable");
-
-                    // send UnregistrationRequest
-                    registrationController.unregister(new UnregistrationRequest(microserviceName,microserviceID));
-                    System.out.println("UnregistrationRequest sent to registrationController");
-
-                    // deregister microservice from service registry
-                    registry.unregisterMicroservice(ms);
-
-                }
-            }
-        }
+//        if(isMonitoring.get()) {
+//            //List<Microservice> microservices = registry.getMicroservices();
+//            for(Microservice ms : microservices){
+//                String microserviceName = ms.getMicroserviceName();
+//                String microserviceID = ms.getMicroserviceID();
+//                String host = ms.getHost();
+//                int port = ms.getPort();
+//                String address = "http://" + host + ":" + port + "/front/health";
+//                String shutdownAddress = "http://" + host + ":" + port + "/front/shutdown";
+//
+//                try {
+//                    ResponseEntity<String> response = restTemplate.getForEntity(address, String.class);
+//                    System.out.println("Health check:" + response);
+//
+//                    if(!response.getStatusCode().is2xxSuccessful()) {
+//                        // send UnregistrationRequest
+//                        registrationController.unregister(new UnregistrationRequest(microserviceName,microserviceID));
+//                        System.out.println("UnregistrationRequest sent to registrationController");
+//
+//                        // deregister microservice from service registry
+//                        registry.unregisterMicroservice(ms);
+//                        System.out.println("RegistryImpl.unregister called on " + microserviceName);
+//
+//                        // shutdown microservice
+//                        ResponseEntity<String> shutdown = restTemplate.getForEntity(shutdownAddress, String.class);
+//                        System.out.println("MicroserviceController.shutdown() called on " + microserviceName);
+//                    }
+//
+//                    boolean healthStatus = response.getStatusCode().is2xxSuccessful();
+//                    ms.setHealthStatus(healthStatus);
+//
+//                    System.out.println(ms.getMicroserviceName() + " health status: " + healthStatus + "\n");
+//
+//
+//                    // if monitoring service cannot connect to the microservice catch exception,
+//                    //deregister microservice and continue loop
+//                } catch (ResourceAccessException e) {
+//                    System.out.println(microserviceName + " unavailable");
+//
+//                    if(!microservices.isEmpty()) {
+//                        // send UnregistrationRequest
+//                        registrationController.unregister(new UnregistrationRequest(microserviceName,microserviceID));
+//                        System.out.println("UnregistrationRequest sent to registrationController");
+//
+//                        // deregister microservice from service registry
+//                        registry.unregisterMicroservice(ms);
+//
+//                    }
+//                }
+//            }
+//        }
     }
 
     @Override
