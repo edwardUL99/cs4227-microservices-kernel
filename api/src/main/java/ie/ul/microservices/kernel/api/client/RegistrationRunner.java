@@ -23,30 +23,34 @@ public class RegistrationRunner implements CommandLineRunner {
     @Autowired
     Environment environment;
 
-    @Value("${kernel-url}")
+    @Value("${kernel-register:true}")
+    private boolean register;
+    @Value("${kernel-url:}")
     private String kernelURL;
-    @Value("${microservice-name}")
+    @Value("${microservice-name:}")
     private String microserviceName;
-    @Value("${server.port}")
+    @Value("${server.port:8080}")
     private int port;
 
     @Override
     public void run(String... args) throws Exception {
-        environment.getProperty("server.port");
-        String host = InetAddress.getLocalHost().getHostAddress();
+        if (register) {
+            environment.getProperty("server.port");
+            String host = InetAddress.getLocalHost().getHostAddress();
 
-        String url = kernelURL + "/api/gateway/connect/";
+            String url = kernelURL + "/api/gateway/connect/";
 
-        RegistrationRequest registrationRequest = new RegistrationRequest(microserviceName, host, port);
-        Request req = new RequestBuilder()
+            RegistrationRequest registrationRequest = new RegistrationRequest(microserviceName, host, port);
+            Request req = new RequestBuilder()
                     .withBody(registrationRequest)
-                    .withHeader("Content-Type","application/json")
+                    .withHeader("Content-Type", "application/json")
                     .withUrl(url)
                     .withMethod(HttpMethod.POST)
                     .build();
-                    
-        RequestSender aRequestSender = new RequestSender();
-        aRequestSender.sendRequest(req);
+
+            RequestSender aRequestSender = new RequestSender();
+            aRequestSender.sendRequest(req);
+        }
     }
     
 }

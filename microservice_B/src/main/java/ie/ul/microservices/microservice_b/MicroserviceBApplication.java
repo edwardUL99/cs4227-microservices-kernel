@@ -2,12 +2,12 @@ package ie.ul.microservices.microservice_b;
 
 import ie.ul.microservices.microservice_b.controllers.MicroserviceBController;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import ie.ul.microservices.kernel.api.KernelMicroservice;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 
 @ComponentScan(basePackages = "ie.ul.microservices.kernel.api")
-@SpringBootApplication
+@KernelMicroservice
 public class MicroserviceBApplication {
 
     public static void main(String[] args) {
