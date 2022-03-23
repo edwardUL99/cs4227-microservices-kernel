@@ -82,7 +82,7 @@ public class MappingServiceImpl implements MappingService {
             context.terminate();
 
             return context;
-        } else if (currentContext != null){
+        } else if (currentContext != null) {
             if (!currentContext.equals(context)) {
                 context = currentContext;
             }

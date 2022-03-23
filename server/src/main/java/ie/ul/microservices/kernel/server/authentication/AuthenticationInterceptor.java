@@ -55,8 +55,6 @@ public class AuthenticationInterceptor extends SingleMappingInterceptor {
         this.accountRepository = accountRepository;
     }
 
-
-
     /**
      * Authenticate the given request
      * @param request the request to authenticate

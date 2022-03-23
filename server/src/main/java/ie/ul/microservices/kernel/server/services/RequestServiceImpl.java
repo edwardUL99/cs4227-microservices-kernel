@@ -14,8 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 
-import java.io.IOException;
-
 /**
  * This class represents the default implementation for the request service
  */
@@ -80,19 +78,13 @@ public class RequestServiceImpl implements RequestService {
      */
     @Override
     public ResponseEntity<?> sendRequest(MappingResult result, APIRequest request) {
-        try {
-            Request req = new RequestBuilder()
-                    .withBody(request.getJSONBody())
-                    .withHeaders(request.getHeaders())
-                    .withUrl(result.getUrl().toString())
-                    .withMethod(request.getMethod())
-                    .build();
+        Request req = new RequestBuilder()
+                .withBody(request.getJSONBody())
+                .withHeaders(request.getHeaders())
+                .withUrl(result.getUrl().toString())
+                .withMethod(request.getMethod())
+                .build();
 
-            return sendAndProcessResponse(result.getMicroservice(), req);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-
-            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
-        }
+        return sendAndProcessResponse(result.getMicroservice(), req);
     }
 }
