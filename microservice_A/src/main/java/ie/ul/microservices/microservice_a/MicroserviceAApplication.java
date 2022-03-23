@@ -2,10 +2,10 @@ package ie.ul.microservices.microservice_a;
 
 import ie.ul.microservices.microservice_a.controllers.MicroserviceAController;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import ie.ul.microservices.kernel.api.KernelMicroservice;
 import org.springframework.context.ApplicationContext;
 
-@SpringBootApplication
+@KernelMicroservice
 public class MicroserviceAApplication {
 
     public static void main(String[] args) {
