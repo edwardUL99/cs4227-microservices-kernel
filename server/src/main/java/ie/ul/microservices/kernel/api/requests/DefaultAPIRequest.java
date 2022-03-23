@@ -45,17 +45,24 @@ public class DefaultAPIRequest implements APIRequest {
      */
     public DefaultAPIRequest(HttpServletRequest wrapped, RequestParser parser) {
         this.wrapped = wrapped;
+        this.initialiseHeaders(wrapped);
+        this.parser = parser;
+    }
 
-        Enumeration<String> headerNames = wrapped.getHeaderNames();
+    /**
+     * Initialises the headers of this request from the provided servlet request
+     * @param request the request to initialise the headers from
+     */
+    private void initialiseHeaders(HttpServletRequest request) {
+        Enumeration<String> headerNames = request.getHeaderNames();
 
         while (headerNames != null && headerNames.hasMoreElements()) {
             String header = headerNames.nextElement();
-            this.httpHeaders.set(header, wrapped.getHeader(header));
+            this.httpHeaders.set(header, request.getHeader(header));
         }
 
-        this.httpHeaders.set("Content-Type", "application/json"); // all requests should be parsed to application/json. If the income request is not application/json, it should be adapted
+        this.httpHeaders.set("Content-Type", "application/json"); // all requests should be parsed to application/json. If the incoming request is not application/json, it should be adapted
 
-        this.parser = parser;
     }
 
     /**
