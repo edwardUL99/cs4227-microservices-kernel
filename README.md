@@ -64,6 +64,29 @@ This is so that the server does not attempt to register with itself. You can als
 server.port=8090
 ```
 
+The KernelServer is intended to be run as a standalone application (i.e. your application will only have this main class),
+without any extra controllers, repositories etc. However, if this is required, modify the main class to be something like this:
+```java
+package com.test.package
+
+import ie.ul.microservices.kernel.server.KernelServer;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+
+@KernelServer
+@EnableJpaRepositories(basePackages = {"ie.ul.microservices.kernel.server", "com.test.package"})
+@EntityScan(basePackages = {"ie.ul.microservices.kernel.server", "com.test.package"})
+public class Application {
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class);
+    }
+}
+```
+
+This will ensure the kernel repositories and entities will be loaded and also the custom ones
+
 ## Creating a microservice
 The process of creating a microservice that will be registered to the kernel is as follows
 1. Add the following dependency to your pom.xml:

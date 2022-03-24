@@ -17,6 +17,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @SpringBootApplication
 @ComponentScan(basePackages = "ie.ul.microservices.kernel.server")
+@ComponentScan
 @EnableJpaRepositories(basePackages = "ie.ul.microservices.kernel.server")
 @EntityScan(basePackages = "ie.ul.microservices.kernel.server")
 public @interface KernelServer {
