@@ -2,15 +2,16 @@ package ie.ul.microservices.microservice_a.controllers;
 
 import ie.ul.microservices.kernel.api.client.FrontController;
 import ie.ul.microservices.kernel.api.client.HealthResponse;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+//@ComponentScan(basePackages = "ie.ul.microservices.kernel.api")
 @RestController
 public class MicroserviceAController implements ApplicationContextAware, FrontController {
     private ApplicationContext context;
@@ -22,7 +23,7 @@ public class MicroserviceAController implements ApplicationContextAware, FrontCo
     private String kernelURL;
 
     @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    public void setApplicationContext(ApplicationContext applicationContext) {
         this.context = applicationContext;
     }
 
@@ -53,6 +54,5 @@ public class MicroserviceAController implements ApplicationContextAware, FrontCo
         SpringApplication.exit(context, () -> 0);
         System.out.println("Microservice " + getMicroserviceName() + " shutdown");
     }
-
 
 }
