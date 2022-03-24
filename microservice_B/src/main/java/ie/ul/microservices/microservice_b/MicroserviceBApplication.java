@@ -15,5 +15,4 @@ public class MicroserviceBApplication {
         // console output
         System.out.println(microserviceBController.getMicroserviceName() + " initialized on port " + microserviceBController.getServerPort());
     }
-
 }

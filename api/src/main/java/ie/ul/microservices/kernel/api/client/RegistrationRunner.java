@@ -6,6 +6,7 @@ import java.net.InetAddress;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
@@ -15,6 +16,7 @@ import ie.ul.microservices.kernel.api.requests.RequestBuilder;
 import ie.ul.microservices.kernel.api.requests.RequestSender;
 import ie.ul.microservices.kernel.api.server.RegistrationRequest;
 
+@Configuration
 @Component
 public class RegistrationRunner implements CommandLineRunner {
 
