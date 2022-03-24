@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -23,54 +22,16 @@ public class MonitorController  extends Thread implements Monitor{
 
     private final RestTemplate restTemplate;
     private AtomicBoolean isMonitoring = new AtomicBoolean(true);
-    private List<Microservice> microservices = new ArrayList<>();
 
     public MonitorController() {
         this.restTemplate = new RestTemplate();
-        //test objects
-//        microservices.add(new Microservice("localhost", 8900, "microservice-A", false));
-//        microservices.add(new Microservice("localhost", 8901, "microservice-B", false));
     }
 
     @Override
     public void run() {
-        //testStartMonitoring();
         startMonitoring();
     }
 
-    @Scheduled(fixedDelay = 5000)
-    public void testStartMonitoring() {
-        if(isMonitoring.get()) {
-            for(Microservice ms : microservices) {
-                String microserviceName = ms.getMicroserviceName();
-                String host = ms.getHost();
-                int port = ms.getPort();
-                String address = "http://" + host + ":" + port + "/front/health";
-                String shutdownAddress = "http://" + host + ":" + port + "/front/shutdown";
-                try {
-                    ResponseEntity<String> response = restTemplate.getForEntity(address, String.class);
-                    System.out.println("Health check:" + response);
-
-                    if(!response.getStatusCode().is2xxSuccessful()) {
-                        ResponseEntity<String> shutdown = restTemplate.getForEntity(shutdownAddress, String.class);
-                        System.out.println("MicroserviceController.shutdown() called on " + microserviceName);
-                    }
-
-                    boolean healthStatus = response.getStatusCode().is2xxSuccessful();
-                    ms.setHealthStatus(healthStatus);
-
-                    System.out.println(ms.getMicroserviceName() + " health status: " + healthStatus + "\n");
-
-                    // if monitoring service cannot connect to the microservice catch exception,
-                    //deregister microservice and continue loop
-                } catch (ResourceAccessException e) {
-                    System.out.println(microserviceName + " unavailable");
-                }
-            }
-        }
-    }
-
-     //this method can be tested once microservice registration is operational
     @Scheduled(fixedDelay = 5000)
     @Override
     public void startMonitoring() {
@@ -107,7 +68,6 @@ public class MonitorController  extends Thread implements Monitor{
 
                     System.out.println(ms.getMicroserviceName() + " health status: " + healthStatus + "\n");
 
-
                     // if monitoring service cannot connect to the microservice catch exception,
                     //deregister microservice and continue loop
                 } catch (ResourceAccessException e) {
@@ -120,7 +80,6 @@ public class MonitorController  extends Thread implements Monitor{
 
                         // deregister microservice from service registry
                         registry.unregisterMicroservice(ms);
-
                     }
                 }
             }
