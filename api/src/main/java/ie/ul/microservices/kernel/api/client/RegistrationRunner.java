@@ -52,5 +52,4 @@ public class RegistrationRunner implements CommandLineRunner {
             aRequestSender.sendRequest(req);
         }
     }
-    
 }
