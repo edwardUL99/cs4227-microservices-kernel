@@ -1,5 +1,6 @@
 package ie.ul.microservices.kernel.server.services;
 
+import com.google.gson.Gson;
 import ie.ul.microservices.kernel.api.requests.APIRequest;
 import ie.ul.microservices.kernel.api.requests.Request;
 import ie.ul.microservices.kernel.api.requests.RequestBuilder;
@@ -27,6 +28,10 @@ public class RequestServiceImpl implements RequestService {
      * The microservice registry
      */
     private final Registry registry;
+    /**
+     * Parsing JSON
+     */
+    private final Gson gson = new Gson();
 
     /**
      * Create a request service implementation
@@ -78,8 +83,10 @@ public class RequestServiceImpl implements RequestService {
      */
     @Override
     public ResponseEntity<?> sendRequest(MappingResult result, APIRequest request) {
+        String json = gson.toJson(request.getJSONBody());
+
         Request req = new RequestBuilder()
-                .withBody(request.getJSONBody())
+                .withBody(json)
                 .withHeaders(request.getHeaders())
                 .withUrl(result.getUrl().toString())
                 .withMethod(request.getMethod())

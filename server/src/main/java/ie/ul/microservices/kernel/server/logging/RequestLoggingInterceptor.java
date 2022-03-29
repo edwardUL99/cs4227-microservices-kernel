@@ -54,8 +54,17 @@ public class RequestLoggingInterceptor extends AllMappingInterceptor {
             log.info("AfterMapping: Routed URL: {}, Microservice Name: {}, Microservice ID: {}", context.getURL(), microservice.getMicroserviceName(), microservice.getMicroserviceID());
         } else {
             URL url = context.getRequest().getRequestURL();
-            String microserviceName = url.getBodyParts()[0];
-            log.error("AfterMapping: Failed to route request as Microservice {} could not be found for URL: {}", microserviceName, url);
+            String[] bodyParts = url.getBodyParts();
+            String name = "unknown";
+
+            for (String bodyPart : bodyParts) {
+                if (!bodyPart.equals("api") && !bodyPart.equals("gateway")) {
+                    name = bodyPart;
+                    break;
+                }
+            }
+
+            log.error("AfterMapping: Failed to route request as Microservice {} could not be found for URL: {}", name, url);
         }
 
         chain.next(context);

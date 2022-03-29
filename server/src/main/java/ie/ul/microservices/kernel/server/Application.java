@@ -8,7 +8,5 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class Application {
     public static void main(String[] args) {
         SpringApplication.run(Application.class);
-        MonitorController monitorController = new MonitorController();
-        monitorController.start();
     }
 }

@@ -3,7 +3,9 @@ package ie.ul.microservices.kernel.server.monitoring;
 import ie.ul.microservices.kernel.api.server.UnregistrationRequest;
 import ie.ul.microservices.kernel.server.controllers.RegistrationControllerImpl;
 import ie.ul.microservices.kernel.server.models.Microservice;
+import ie.ul.microservices.kernel.server.registration.Registry;
 import ie.ul.microservices.kernel.server.registration.RegistryImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -16,15 +18,19 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 @EnableScheduling
 @RestController
-public class MonitorController  extends Thread implements Monitor{
-    private final RegistrationControllerImpl registrationController = RegistrationControllerImpl.getContext().getBean(RegistrationControllerImpl.class);
-    private final RegistryImpl registry = RegistryImpl.getContext().getBean(RegistryImpl.class);
+public class MonitorController extends Thread implements Monitor{
+    private final RegistrationControllerImpl registrationController;
+    private final Registry registry;
 
     private final RestTemplate restTemplate;
     private AtomicBoolean isMonitoring = new AtomicBoolean(true);
 
-    public MonitorController() {
+    @Autowired
+    public MonitorController(RegistrationControllerImpl registrationController, Registry registry) {
         this.restTemplate = new RestTemplate();
+        this.registrationController = registrationController;
+        this.registry = registry;
+        this.start();
     }
 
     @Override
