@@ -6,9 +6,7 @@ import ie.ul.microservices.kernel.api.requests.RequestException;
 import ie.ul.microservices.kernel.api.requests.RequestSender;
 import ie.ul.microservices.kernel.server.models.Microservice;
 import ie.ul.microservices.kernel.server.registration.Registry;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
-import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;

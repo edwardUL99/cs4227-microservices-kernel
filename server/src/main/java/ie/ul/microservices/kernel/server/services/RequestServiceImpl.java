@@ -7,13 +7,12 @@ import ie.ul.microservices.kernel.api.requests.RequestBuilder;
 import ie.ul.microservices.kernel.api.requests.RequestException;
 import ie.ul.microservices.kernel.api.requests.RequestSender;
 import ie.ul.microservices.kernel.server.mapping.MappingResult;
-import ie.ul.microservices.kernel.server.models.Microservice;
-import ie.ul.microservices.kernel.server.registration.Registry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 
 /**
  * This class represents the default implementation for the request service
@@ -25,52 +24,57 @@ public class RequestServiceImpl implements RequestService {
      */
     private final RequestSender sender = new RequestSender();
     /**
-     * The microservice registry
-     */
-    private final Registry registry;
-    /**
      * Parsing JSON
      */
     private final Gson gson = new Gson();
 
     /**
      * Create a request service implementation
-     * @param registry the microservice registry
      */
     @Autowired
-    public RequestServiceImpl(Registry registry) {
-        this.registry = registry;
+    public RequestServiceImpl() {
+    }
+
+    /**
+     * Handle the given request exception and send the error response
+     * @param ex the exception to process
+     * @return the response body
+     */
+    private ResponseEntity<?> handleException(RequestException ex) {
+        ex.printStackTrace();
+
+        Throwable cause = ex.getCause();
+
+        if (cause instanceof HttpClientErrorException) {
+            HttpClientErrorException clientError = (HttpClientErrorException)cause;
+
+            return ResponseEntity.status(clientError.getRawStatusCode()).body(clientError.getResponseBodyAsString());
+        } else if (cause instanceof HttpServerErrorException) {
+            HttpServerErrorException clientError = (HttpServerErrorException)cause;
+
+            return ResponseEntity.status(clientError.getRawStatusCode()).body(clientError.getResponseBodyAsString());
+        } else {
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
+        }
     }
 
     /**
      * Sends the request and checks the response for any error conditions
-     * @param microservice the microservice the request was sent to
      * @param request to send
      * @return the response
      */
-    private ResponseEntity<?> sendAndProcessResponse(Microservice microservice, Request request) {
-        // todo may need to do more checking such as the status and exception
+    private ResponseEntity<?> sendAndProcessResponse(Request request) {
         try {
             ResponseEntity<?> response = sender.sendRequest(request);
             int status = response.getStatusCodeValue();
 
             if (status > 500) {
-                registry.unregisterMicroservice(microservice);
                 return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
             } else {
                 return response;
             }
         } catch (RequestException ex) {
-            ex.printStackTrace();
-
-            Throwable cause = ex.getCause();
-
-            if (cause instanceof RestClientException) {
-                microservice.setHealthStatus(false);
-                registry.unregisterMicroservice(microservice);
-            }
-
-            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
+            return handleException(ex);
         }
     }
 
@@ -92,6 +96,6 @@ public class RequestServiceImpl implements RequestService {
                 .withMethod(request.getMethod())
                 .build();
 
-        return sendAndProcessResponse(result.getMicroservice(), req);
+        return sendAndProcessResponse(req);
     }
 }
