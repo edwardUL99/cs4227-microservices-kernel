@@ -36,5 +36,5 @@ public interface Registry {
      */
     void unregisterMicroservice(Microservice microservice);
 
-    void unregisterMicroservice(String name, String id);
+    boolean unregisterMicroservice(String name, String id);
 }

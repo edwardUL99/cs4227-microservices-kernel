@@ -12,14 +12,12 @@ import javax.validation.Valid;
  * to the clients of the available registration methods. But, it should only be implemented by a microservice kernel server
  * TODO think about other methods
  */
-@RequestMapping("/kernel/registration")
 public interface RegistrationController {
     /**
      * Register the microservice with the kernel through the defined registration request object.
      * @param request the request containing the information of the microservice that wishes to register with the kernel
      * @return the response to the registration request. It can either be successful or unsuccessful
      */
-    @PostMapping("/register")
     ResponseEntity<RegistrationResponse> register(@RequestBody @Valid RegistrationRequest request);
 
     /**

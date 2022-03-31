@@ -67,15 +67,16 @@ public class RegistrationControllerImpl implements RegistrationController, Appli
      * @return the response after the microservice was unregistered
      */
     @Override
+    @PostMapping("/unregister")
     public ResponseEntity<UnregistrationResponse> unregister(UnregistrationRequest request) {
         HttpStatus httpStatus = HttpStatus.OK;
 
-        registry.unregisterMicroservice(request.GetName(), request.GetID());
-        if(true) {
+        boolean unregistered = registry.unregisterMicroservice(request.GetName(), request.GetID());
+        if(!unregistered) {
             httpStatus = HttpStatus.NOT_ACCEPTABLE;
         }
 
-        UnregistrationResponse unregistrationResponse = new UnregistrationResponse();
+        UnregistrationResponse unregistrationResponse = new UnregistrationResponse(unregistered);
         return new ResponseEntity<>(unregistrationResponse, httpStatus);
     }
 

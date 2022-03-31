@@ -95,8 +95,15 @@ public class RegistryImpl implements Registry, ApplicationContextAware {
 
     }
 
-    public void unregisterMicroservice(String microserviceName, String id) {
-        microservices.get(microserviceName).remove(id);
+    @Override
+    public boolean unregisterMicroservice(String microserviceName, String id) {
+        if(microservices.containsKey(microserviceName)){
+            if(microservices.get(microserviceName).containsKey(id)) {
+                microservices.get(microserviceName).remove(id);
+                return true;
+            }
+        }
+        return false;
 
     }
 
