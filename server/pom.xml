@@ -62,4 +62,17 @@
             <artifactId>jackson-dataformat-xml</artifactId>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <goal>repackage</goal>
+                    <mainClass>ie.ul.microservices.kernel.server.Application</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
