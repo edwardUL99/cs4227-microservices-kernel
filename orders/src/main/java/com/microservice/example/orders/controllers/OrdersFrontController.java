@@ -33,6 +33,6 @@ public class OrdersFrontController implements FrontController {
     @Override
     public void shutdown() {
         log.info("Instructed to shutdown by microservice kernel");
-        shutdown.shutdown();
+        shutdown.execute();
     }
 }

@@ -25,9 +25,9 @@ public class Shutdown {
     }
 
     /**
-     * Shutdown the applications
+     * Shutdown the application
      */
-    public void shutdown() {
+    public void execute() {
         SpringApplication.exit(applicationContext, () -> 0);
     }
 }

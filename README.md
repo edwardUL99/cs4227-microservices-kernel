@@ -21,6 +21,13 @@ increasing the number of different URLs the clients have to use. Changes to thes
 - To use the project, you need JDK 11
 - Maven 3.6.3
 
+## Build
+Before you can define microservices and import the server, you must install the framework with Maven by running the following
+command from the root of the project:
+```
+mvn clean install
+```
+
 ## Kernel Server
 The kernel server is the gateway which maps incoming requests to registered microservices. It provides the following features:
 - Mapping of incoming requests to microservices that can handle them. The URL should be of the form:
@@ -99,34 +106,58 @@ The process of creating a microservice that will be registered to the kernel is 
 ```
 This artifact provides the APIs necessary for a microservice to be able to be registered with the kernel
 2. Create a controller class that implements the `ie.ul.microservices.kernel.api.client.FrontController.java` interface like so:
+
 ```java
 package ie.ul.microservices.sample.microservice.controllers;
 
 import ie.ul.microservices.kernel.api.client.FrontController;
 import ie.ul.microservices.kernel.api.client.HealthResponse;
+import ie.ul.microservices.kernel.api.client.Shutdown;
 import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/front")
 public class SampleFrontController implements FrontController {
-    /**
-     * This endpoint is called by the kernel to request a health check on the microservice
-     *
-     * @return the response entity containing the health response
-     */
-    @Override
-    public ResponseEntity<HealthResponse> health() {
-        return null;
-    }
+  /**
+   * An API client class that allows the microservice to shut itself down
+   */
+  private final Shutdown shutdown;
 
-    /**
-     * The kernel can call this endpoint to tell the microservice that it should be shutdown. The response should be sent back
-     * to the kernel before shutdown.
-     * Sent as a POST mapping since it can be considered to "change" something on the server, i.e. the status of it
-     */
-    @Override
-    public void shutdown() {
-    }
+  /**
+   * Create a controller instance
+   * @param shutdown the shutdown client to inject
+   */
+  @Autowired
+  public SampleFrontController(Shutdown shutdown) {
+    this.shutdown = shutdown;
+  }
+
+  /**
+   * This endpoint is called by the kernel to request a health check on the microservice
+   *
+   * @return the response entity containing the health response
+   */
+  @Override
+  @GetMapping("/health")
+  public ResponseEntity<HealthResponse> health() {
+    return null; // return a meaningful health response here ResponseEntity.ok(response);
+  }
+
+  /**
+   * The kernel can call this endpoint to tell the microservice that it should be shutdown. The response should be sent back
+   * to the kernel before shutdown.
+   * Sent as a POST mapping since it can be considered to "change" something on the server, i.e. the status of it
+   */
+  @Override
+  @PostMapping("/shutdown")
+  public void shutdown() {
+    shutdown.execute();  
+  }
 }
 ```
 You need to define what parameters of the HealthResponse should be returned from the health endpoint. The shutdown endpoint
