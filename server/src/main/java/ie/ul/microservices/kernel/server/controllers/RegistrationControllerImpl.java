@@ -7,7 +7,6 @@ import ie.ul.microservices.kernel.api.server.RegistrationResponse;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.annotation.Bean;
 
 import ie.ul.microservices.kernel.api.server.UnregistrationRequest;
 import ie.ul.microservices.kernel.api.server.UnregistrationResponse;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 
 /**
  * This is the implementation of the registration controller
@@ -34,6 +32,10 @@ public class RegistrationControllerImpl implements RegistrationController, Appli
     private static ApplicationContext context;
     private final Registry registry;
 
+    /**
+     * Constructs a registration controller with given parameters
+     * @param registry - the registry that the controller will implement
+     */
     public RegistrationControllerImpl(Registry registry){
         this.registry = registry;
     }
