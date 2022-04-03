@@ -38,7 +38,8 @@ public class Constants {
     }
 
     /**
-     * 
+     * private constructor for static class
+     * to prevent instantiation of class.
      */
     private Constants(){
     }

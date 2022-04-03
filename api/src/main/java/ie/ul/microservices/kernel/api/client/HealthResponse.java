@@ -19,13 +19,17 @@ public class HealthResponse {
     }
 
     /**
-     * 
-     * @return
+     * retrieves the name of the microservice
+     * @return name of the microservice
      */
     public String getMicroserviceName() {
         return microserviceName;
     }
 
+    /**
+     * sets the name of the microservice
+     * @param microserviceName name of the microservice
+     */
     public void setMicroserviceName(String microserviceName) {
         this.microserviceName = microserviceName;
     }

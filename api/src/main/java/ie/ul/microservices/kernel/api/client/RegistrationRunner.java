@@ -17,7 +17,10 @@ import ie.ul.microservices.kernel.api.requests.RequestSender;
 import ie.ul.microservices.kernel.api.server.RegistrationRequest;
 
 /**
- * 
+ * Implements CommandLineRunner
+ * Registration runner implements the run method which
+ * is called by microservices at run time so that they 
+ * automatically register with the kernel.
  */
 @Configuration
 @Component
@@ -30,10 +33,10 @@ public class RegistrationRunner implements CommandLineRunner {
     Environment environment;
 
     /**
-     * register -
-     * kernalURL -
-     * microserviceName -
-     * port -
+     * register - retrives boolean value to determine if registration should occur
+     * kernalURL - retrieves value of kernel url from property file
+     * microserviceName - retrieves value of microservice name from property file
+     * port - retrieves value of server port from property file
      */
     @Value("${kernel-register:true}")
     private boolean register;
@@ -45,7 +48,11 @@ public class RegistrationRunner implements CommandLineRunner {
     private int port;
 
     /**
-     * 
+     * Determines if registration should occur.
+     * Fetches host address and port values for the microservice.
+     * Creates url for registration request to be sent to.
+     * Constructs the registration request.
+     * Request is then built and sent with the registration request..
      */
     @Override
     public void run(String... args) throws Exception {

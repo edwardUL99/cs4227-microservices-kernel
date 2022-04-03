@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 /**
  * This interface is the controller interface that all microservices wishing to register with the kernel should implement.
  * It defines the endpoints expected by the kernel and that the kernel can therefore call.
- * TODO think about other endpoints
  */
 @RequestMapping("/front")
 public interface FrontController {
