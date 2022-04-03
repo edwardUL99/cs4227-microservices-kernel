@@ -71,7 +71,7 @@ public class RegistrationControllerImpl implements RegistrationController, Appli
     public ResponseEntity<UnregistrationResponse> unregister(UnregistrationRequest request) {
         HttpStatus httpStatus = HttpStatus.OK;
 
-        boolean unregistered = registry.unregisterMicroservice(request.GetName(), request.GetID());
+        boolean unregistered = registry.unregisterMicroservice(request.getName(), request.getID());
         if(!unregistered) {
             httpStatus = HttpStatus.NOT_ACCEPTABLE;
         }

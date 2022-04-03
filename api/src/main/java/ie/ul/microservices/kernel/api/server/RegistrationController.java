@@ -1,16 +1,12 @@
 package ie.ul.microservices.kernel.api.server;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-
 import javax.validation.Valid;
 
 /**
  * This interface represents the kernel's controller for registering microservices. It is in the API module simply for visibility
  * to the clients of the available registration methods. But, it should only be implemented by a microservice kernel server
- * TODO think about other methods
  */
 public interface RegistrationController {
     /**

@@ -16,13 +16,25 @@ import ie.ul.microservices.kernel.api.requests.RequestBuilder;
 import ie.ul.microservices.kernel.api.requests.RequestSender;
 import ie.ul.microservices.kernel.api.server.RegistrationRequest;
 
+/**
+ * 
+ */
 @Configuration
 @Component
 public class RegistrationRunner implements CommandLineRunner {
 
+    /**
+     * 
+     */
     @Autowired
     Environment environment;
 
+    /**
+     * register -
+     * kernalURL -
+     * microserviceName -
+     * port -
+     */
     @Value("${kernel-register:true}")
     private boolean register;
     @Value("${kernel-url:}")
@@ -32,6 +44,9 @@ public class RegistrationRunner implements CommandLineRunner {
     @Value("${server.port:8080}")
     private int port;
 
+    /**
+     * 
+     */
     @Override
     public void run(String... args) throws Exception {
         if (register) {

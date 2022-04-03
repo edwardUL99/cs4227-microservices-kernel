@@ -6,7 +6,6 @@ import ie.ul.microservices.kernel.server.models.Microservice;
 
 /**
  * This interface represents a registry that is capable of storing registered microservices
- * TODO think of the methods a registry should provide
  */
 public interface Registry {
     /**
@@ -28,6 +27,13 @@ public interface Registry {
      */
     void registerMicroservice(Microservice microservice);
 
+    /**
+     * Register the microservice into the registry given these parameters
+     * @param name - name of microservice
+     * @param host - host address of microservice
+     * @param port - port of the microservice
+     * @return string ID representing microservice unique registration id
+     */
     String registerMicroservice(String name, String host, int port);
 
     /**
@@ -36,5 +42,11 @@ public interface Registry {
      */
     void unregisterMicroservice(Microservice microservice);
 
+    /**
+     * Unregister the microservice from the registry given these parameters
+     * @param name - name of microservice
+     * @param id - registration id of microservice
+     * @return boolean value determining if registration was successful
+     */
     boolean unregisterMicroservice(String name, String id);
 }

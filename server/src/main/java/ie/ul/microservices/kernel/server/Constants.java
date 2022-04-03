@@ -38,6 +38,12 @@ public class Constants {
     }
 
     /**
+     * 
+     */
+    private Constants(){
+    }
+
+    /**
      * Split the url removing empty parts
      * @param url the url to split
      * @return the split url

@@ -10,11 +10,14 @@ import ie.ul.microservices.kernel.server.models.Microservice;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
+/**
+ * Implements the registry interface
+ * Class maintains a singleton registry
+ * of all available microservices
+ */
 @Service
 @Scope("singleton")
 public class RegistryImpl implements Registry, ApplicationContextAware {
@@ -75,14 +78,18 @@ public class RegistryImpl implements Registry, ApplicationContextAware {
         }
     }
 
+    /**
+     * registers the microservice with given paramets in the registry
+     * @param name - name of microservice
+     * @param host - host address of the microservice
+     * @param port - port number of the microservice
+     * @return string id - registration id of microservice
+     */
     @Override
     public String registerMicroservice(String name, String host, int port) {
-        Microservice microservice = new Microservice(host, port, name, false);
-        String id = generateID(microservice);
-        microservice.setMicroserviceID(id);
-
+        Microservice microservice = new Microservice(host, port, name, true);
         registerMicroservice(microservice);
-        return id;
+        return microservice.getMicroserviceID();
     }
 
     /**
@@ -91,10 +98,19 @@ public class RegistryImpl implements Registry, ApplicationContextAware {
      */
     @Override
     public void unregisterMicroservice(Microservice microservice) {
-        microservices.get(microservice.getMicroserviceName()).remove(microservice.getMicroserviceID());
-
+        if(microservices.containsKey(microservice.getMicroserviceName())){
+            if(microservices.get(microservice.getMicroserviceName()).containsKey(microservice.getMicroserviceID())) {
+                microservices.get(microservice.getMicroserviceName()).remove(microservice.getMicroserviceID());
+            }
+        }
     }
 
+    /**
+     * unregiters the microservice with given parameters from the registry
+     * @param microserviceName - name of microservice
+     * @param id - registration id of microservice
+     * @return boolean that returns true if unregistered successfully
+     */
     @Override
     public boolean unregisterMicroservice(String microserviceName, String id) {
         if(microservices.containsKey(microserviceName)){

@@ -9,7 +9,6 @@ import java.util.Objects;
 
 /**
  * This class represents a Microservice instance that has been registered on the kernel
- * TODO decide what fields to add to it
  */
 
 public class Microservice {
@@ -19,6 +18,13 @@ public class Microservice {
     boolean healthStatus;
     String microserviceID;
 
+    /**
+     * Constructs a microservice object with given parameters
+     * @param host - host address
+     * @param port - port number
+     * @param microserviceName - name of microservice
+     * @param healthStatus - the health status of the microservice
+     */
     public Microservice(String host, int port, String microserviceName, boolean healthStatus) {
         this.host = host;
         this.port = port;
@@ -26,6 +32,9 @@ public class Microservice {
         this.healthStatus = healthStatus;
     }
 
+    /**
+     * Constructs a default microservice with default values
+     */
     public Microservice() {
         this(null, 0, null, false);
     }
@@ -93,10 +102,19 @@ public class Microservice {
         return microserviceID;
     }
 
+    /**
+     * Set the microservices name
+     * 
+     * @param microserviceName
+     */
     public void setMicroserviceName(String microserviceName) {
         this.microserviceName = microserviceName;
     }
 
+    /**
+     * Override the equals method so that 
+     * microservices are compared appropriately
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -105,17 +123,26 @@ public class Microservice {
         return port == that.port && healthStatus == that.healthStatus && Objects.equals(host, that.host) && Objects.equals(microserviceName, that.microserviceName);
     }
 
+    /**
+     * Override hash code method so that 
+     * microservice is appropriately hashed
+     */
     @Override
     public int hashCode() {
         return Objects.hash(host, port, microserviceName, healthStatus);
     }
 
+    /**
+     * Sets the id of the microservice
+     * 
+     * @param microserviceID
+     */
     public void setMicroserviceID(String microserviceID) {
         this.microserviceID = microserviceID;
     }
 
     /**
-     * sets the health status of the microservice to specified health status
+     * Sets the health status of the microservice to specified health status
      *
      * @param healthStatus new health status of the microservice
      */
