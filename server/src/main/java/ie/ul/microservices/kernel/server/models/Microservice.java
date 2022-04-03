@@ -1,17 +1,17 @@
 package ie.ul.microservices.kernel.server.models;
-
-import ie.ul.microservices.kernel.api.client.FrontController;
-import ie.ul.microservices.kernel.api.client.HealthResponse;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-
 import java.util.Objects;
 
 /**
  * This class represents a Microservice instance that has been registered on the kernel
  */
-
 public class Microservice {
+    /**
+     * microservice name - name of microservice
+     * host - host address of microservice
+     * port - port number of microserive
+     * healthStatus - health of microservice
+     * microserviceID - registration id of microservice
+     */
     String microserviceName;
     String host;
     int port;
